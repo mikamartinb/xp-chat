@@ -1,8 +1,8 @@
 import streamlit as st
 
-st.page_link("chatbot.py", label="Back to options")
+st.page_link("Home.py", icon="⬅️")
 
-st.title('Modus: Open Questions')
+st.markdown("<h1 style='text-align: center; color: white;'>Modus: Open Questions 📝</h1>", unsafe_allow_html=True)
 
 st.write("This is a sample question?")
 

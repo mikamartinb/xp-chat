@@ -1,8 +1,8 @@
 import streamlit as st
 
-st.page_link("chatbot.py", label="Back to options")
+st.page_link("Home.py", icon="⬅️")
 
-st.title('Modus: Chatting')
+st.markdown("<h1 style='text-align: center; color: white;'>Modus: Chatting 💬</h1>", unsafe_allow_html=True)
 
 messages = st.container(height=300)
 if prompt := st.chat_input("Say something"):
