@@ -96,3 +96,20 @@ git checkout -b feature0001
 
 Das ist die grundlegende Anleitung. Achte darauf, dass du regelmäßig von `main` pullst, um Konflikte zu vermeiden. Bei Fragen melde dich bei mir!
 
+Die Streamlit App, startest du in dem du diesen Command in das Terminal eingibst:
+Hier ist der Teil zur Ausführung der Streamlit-App:
+
+---
+
+### 6. Streamlit App starten
+
+Um die Streamlit App zu starten, gehe wie folgt vor:
+
+
+   ```bash
+   streamlit run Home.py
+   ```
+
+---
+
+
