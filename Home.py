@@ -3,21 +3,8 @@ from model_utils import initialize_model
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import PromptTemplate
 
-model = initialize_model()
-
-prompt_template = "Tell me a {adjective} joke"
-prompt = PromptTemplate(
-    input_variables=["adjective"], template=prompt_template
-)
-llm = model
-
-chain = prompt | llm | StrOutputParser()
-
-title = chain.invoke("Write a cool Title for an AI-Project seminar (Use only 3 words)")
-
 st.set_page_config(initial_sidebar_state="collapsed")
-#st.title("_:blue[XP]Chat_")
-st.title(title)
+st.title("_:blue[XP]Chat_")
 
 st.markdown("*Choose your learning modus*")
 col1, col2, col3 = st.columns(3)

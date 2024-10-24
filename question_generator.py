@@ -8,13 +8,14 @@ from langchain.chains import RetrievalQA
 
 
 def generate_questions(pdf_path, llm):
-    pdf_name = pdf_path.split("/")[-1]
+    # PDF einlesen
     text = ""
     with open(pdf_path, "rb") as file:
         reader = PyPDF2.PdfReader(file)
         for page in reader.pages:
             text += page.extract_text()
             
+    # Text in Chunks aufteilen
     chunk_size = 1000
     chunk_overlap = chunk_size // 10
 
@@ -26,30 +27,33 @@ def generate_questions(pdf_path, llm):
     
     chunks = text_splitter.split_text(text=text)
     
+    # Embeddings und FAISS Vektor-Speicher
     embeddings_model_name = "sentence-transformers/all-MiniLM-L6-v2"
     embeddings = HuggingFaceEmbeddings(model_name=embeddings_model_name)
     vectorstore = FAISS.from_texts(chunks, embedding=embeddings)
     
-    prompt = PromptTemplate(
-        input_variables=["text"],
-        template="""
-        Erstelle aus dem folgenden Text Klausurfragen im Format einer Liste von Dictionaries:
+    # Retrieval-Objekt erstellen
+    retriever = vectorstore.as_retriever()
+    
+    # Retrieval-basierte Q&A-Kette
+    qa = RetrievalQA.from_chain_type(llm=llm, chain_type="stuff", retriever=retriever, return_source_documents=False)
+    
+    # Prompt für die Fragen ohne den gesamten Text
+    prompt = """
+        Erstelle zu jedem Thema Multiple Choice - Klausurfragen im Format einer Liste von Dictionaries:
         [{
             "question": "Frage?",
-            "information": "HIER NICHTS GENERIEREN",
+            "information": "02_Informationssysteme",
             "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
             "answer": "Richtige Antwort"
         }]
-        Text: {text}
-        """
-    )
+        Nutze den Text, den du als Kontext hast, um die Fragen zu erstellen.
+    """
     
-    qa_chain = prompt | llm
-    return qa_chain.invoke(text)
+    # Fragen generieren basierend auf abgerufenen Text-Chunks
+    result = qa.invoke(prompt)
+    return result["result"]
     
-
-    
-
 # Hauptfunktion
 def main():
     pdf_path = "/Users/mika/Desktop/Mika/Studium/7.Semester/AI Project/xp-chat/slides/01_Informationssysteme.pdf"  # Pfad zur PDF-Datei
