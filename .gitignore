@@ -2,3 +2,4 @@ ai_project_venv/
 __pycache__
 venv/
 key.secret/
+.DS_Store
