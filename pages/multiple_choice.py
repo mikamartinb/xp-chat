@@ -16,7 +16,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Load the quiz data from the JSON file
-quiz_file_path = '/Users/mika/Desktop/Mika/Studium/7.Semester/AI Project/xp-chat-1/questions_answers/multiple_choice.json'
+quiz_file_path = 'questions_answers/multiple_choice.json'
 
 # Load quiz data from JSON file (assuming it’s a list of questions)
 with open(quiz_file_path, 'r', encoding='utf-8') as f:
