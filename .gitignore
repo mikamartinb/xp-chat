@@ -1,6 +1,8 @@
 ai_project_venv/
 __pycache__
 venv/
+.venv/
+meinvenv/
 key.secret/
 .DS_Store
 /Users/mika/Desktop/Mika/Studium/7.Semester/AI Project/xp-chat/__pycache__

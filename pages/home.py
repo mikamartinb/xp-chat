@@ -29,14 +29,21 @@ with st.sidebar:
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.is_admin = False
+        st.session_state.matrikelnummer = null
         st.toast("Erfolgreich abgemeldet.", icon='👋')
         st.switch_page("app.py")
     st.sidebar.markdown("Made with ❤️ by ChatXP")
 
-st.title("Offene Fragen Modus")
 
-st.markdown("<h1 style='text-align: center; color: white;'>Modus: Open Questions 📝</h1>", unsafe_allow_html=True)
+# --- Page Content ---
+st.title("Home menu")
 
-st.write("This is a sample question?")
 
-prompt = st.chat_input("Say something")
+
+
+
+
+
+
+
+

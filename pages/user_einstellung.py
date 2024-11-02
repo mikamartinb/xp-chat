@@ -1,8 +1,9 @@
 import streamlit as st
+from SQLmodule_commands import get_user_full_name
 
 st.set_page_config(
-    page_title="Home",
-    page_icon="📚",
+    page_title="Einstellung",
+    page_icon="⚙️",
     layout="centered",
     initial_sidebar_state="expanded",
     menu_items={
@@ -33,10 +34,22 @@ with st.sidebar:
         st.switch_page("app.py")
     st.sidebar.markdown("Made with ❤️ by ChatXP")
 
-st.title("Offene Fragen Modus")
 
-st.markdown("<h1 style='text-align: center; color: white;'>Modus: Open Questions 📝</h1>", unsafe_allow_html=True)
+# --- Page Content ---
+col1, col2 = st.columns(2, gap="small", vertical_alignment="center")
+with col1:
+    st.image("images/User_Profile_image.png", width=230)
 
-st.write("This is a sample question?")
+with col2:
+    vor_und_nachname = get_user_full_name(st.session_state.matrikelnummer)
+    st.title(f"{vor_und_nachname}", anchor=False)
+    st.write("")
+    st.write("")
+    st.write("")
+    st.write("")
+    st.write("")
+    st.write("")
+    st.write("")
 
-prompt = st.chat_input("Say something")
+st.header("", divider="red")
+st.write("## Einstellungen")
