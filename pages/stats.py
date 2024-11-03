@@ -33,10 +33,5 @@ with st.sidebar:
         st.switch_page("app.py")
     st.sidebar.markdown("Made with ❤️ by ChatXP")
 
-st.title("Offene Fragen Modus")
-
-st.markdown("<h1 style='text-align: center; color: white;'>Modus: Open Questions 📝</h1>", unsafe_allow_html=True)
-
-st.write("This is a sample question?")
-
-prompt = st.chat_input("Say something")
+# --- Page Content ---
+st.title("Meine Statistik")
