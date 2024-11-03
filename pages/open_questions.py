@@ -18,9 +18,9 @@ with st.sidebar:
     st.page_link("pages/home.py",label="Home", icon="🏠")
     st.page_link("pages/stats.py",label="Meine Statistik", icon="📊")
     st.write("Lernen")
-    st.page_link("pages/multiple_choice.py",label="Multiple Choice Fragen", icon="❓")
-    st.page_link("pages/open_questions.py",label="Multiple Choice Fragen", icon="🗣")
-    st.page_link("pages/chatting.py",label="Chaten", icon="💬")
+    st.page_link("pages/multiple_choice.py",label="Multiple Choice", icon="🔘")
+    st.page_link("pages/open_questions.py",label="Open Questions", icon="📝")
+    st.page_link("pages/chatting.py",label="Chatten", icon="💬")
     st.divider()
     # Admin-Seite nur hinzufügen, wenn der Benutzer Admin-Rechte hat
     if st.session_state.get("is_admin", True):
@@ -32,8 +32,6 @@ with st.sidebar:
         st.toast("Erfolgreich abgemeldet.", icon='👋')
         st.switch_page("app.py")
     st.sidebar.markdown("Made with ❤️ by ChatXP")
-
-st.title("Offene Fragen Modus")
 
 st.markdown("<h1 style='text-align: center; color: white;'>Modus: Open Questions 📝</h1>", unsafe_allow_html=True)
 
