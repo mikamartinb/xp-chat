@@ -44,9 +44,10 @@ lecture_titles = [lec.title for lec in lectures]
 
 # Auswahl der gefilterten Vorlesungen
 selected_lecture_titles = st.multiselect(
-    "Wähle die Vorlesungen aus, zu denen du Fragen beantworten möchtest",
+    "",
     lecture_titles,
-    []
+    [],
+    placeholder="Wähle die Vorlesungen aus die du lernen die du möchtest"
 )
 
 # Filtern der lecture_ids basierend auf den ausgewählten Titeln
