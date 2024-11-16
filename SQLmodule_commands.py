@@ -252,14 +252,13 @@ def delete_lecture(lecture_titel):
     with Session(engine) as session:
         # Holt die Vorlesung
         lecture = session.exec(select(Lecture).where(Lecture.title == lecture_titel)).first()
-        # Holt die ID der Vorlesung
-        current_lecuture_id =session.exec(select(Lecture.id).where(Lecture.title == lecture_titel)).first()
         if lecture:
-            # Löscht die Mutliple-Choice-Fragen die mit der Vorlesung verbunden sind
-            mtl_question_statement = delete(MTL_Question).where(MTL_Question.lecture_id == current_lecuture_id.id)
+            # Löscht die Mutliple-Choice-Fragen, die mit der Vorlesung verbunden sind
+            mtl_question_statement = delete(MTL_Question).where(MTL_Question.lecture_id == lecture.id)
+            session.exec(mtl_question_statement)
             # Löscht die Vorlesung
-            lecture_statement = delete(Lecture).where(Lecture.title == lecture_titel)
-            session.exec(statement)
+            lecture_statement = delete(Lecture).where(Lecture.id == lecture.id)
+            session.exec(lecture_statement)
             session.commit()
 
 # Gibt alle Multiple-Choice-Fragen zurück
@@ -283,7 +282,7 @@ def add_mtl_question(lecture_titel, question_text, options_1, options_2, options
         )
         session.add(new_question)
         session.commit()
-        st.toast("Frage Hinzu gefügt", icon='🎉')
+        st.toast("Frage hinzugefügt!", icon='🎉')
 
 # Updated Multiple-Choice-Frage
 def update_mtl_question(question_id, lecture_id=None, question_text=None, options_1=None, options_2=None, options_3=None, options_4=None, answer=None):

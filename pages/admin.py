@@ -60,7 +60,7 @@ col3.metric("Humidity", "86%", "4%")
 # Manuelles hinzufügen von Usern
 def registration_page():
     # Formular für die Registrierung
-    with st.form(key='Registrierung'):
+    with st.form(key='Registrierung', clear_on_submit=True):
         matrikelnummer = st.text_input("Matrikelnummer", placeholder="Die Matrikelnummer wird automatisch zugelassen")
         vorname = st.text_input("Vorname", placeholder="z.B. Max")
         nachname = st.text_input("Nachname", placeholder="z.B. Mustermann")
@@ -199,7 +199,8 @@ with user_3:
     edited_df = st.data_editor(user_df, use_container_width=True, height=400)
     for index, row in edited_df.iterrows():
         update_all_users_info(row['matrikelnummern'], row['vorname'], row['nachname'], row['email'], row['passwort'], row['admin'])
-    with st.form(key='User_löschen'):
+    # Löschen von Usern
+    with st.form(key='User_löschen', clear_on_submit=True):
         def validate_delete_user_form():
             if not matrikelnummern_delete_input:
                 st.toast("Bitte geben Sie eine Matrikelnummer an", icon="❌")
@@ -237,7 +238,7 @@ with user_4:
                     st.rerun()  # Seite aktualisieren, um die geänderte Tabelle zu laden
         with mat2:
             st.subheader("Matrikelnummern Registrierung erlauben", divider="red")
-            with st.form(key='Erlaubte Matrikelnummern'):
+            with st.form(key='Erlaubte Matrikelnummern', clear_on_submit=True):
                 matrikelnummern = st.text_input("Matrikelnummer", placeholder="z.B. 30400")
                 submit_button = st.form_submit_button("Erlauben", type="primary")
             if submit_button:
@@ -256,7 +257,7 @@ with lecture_1:
         )
         st.dataframe(lecture_df, hide_index=True, use_container_width=True, height=400)
 with lecture_2:
-    with st.form("add_lecture"):
+    with st.form("add_lecture", clear_on_submit=True):
         title = st.text_input("Titel")
         description = st.text_area("Beschreibung")
         lecture_submit = st.form_submit_button("Hinzufügen")
@@ -283,7 +284,7 @@ with lecture_3:
     for index, row in edited_df.iterrows():
         update_lecture(row['id'], row['title'], row['description'])
     # Löschen von Vorlesungen und aller Fragen in der Vorlesung
-    with st.form(key='Vorlesung_löschen'):
+    with st.form(key='Vorlesung_löschen', clear_on_submit=True):
         st.subheader("User löschen")
         lecture_delete_selection = st.selectbox("Vorlesung", [lecture.title for lecture in get_all_lectures()], index=None, placeholder="Wählen Sie eine Vorlesung aus")
         if st.form_submit_button("Vorlesung löschen", type="primary"):
@@ -303,49 +304,105 @@ with mtl_1:
         columns=['id', 'lecture_id', 'question_text', 'options_1', 'options_2', 'options_3', 'options_4', 'answer']
     )
     st.dataframe(question_df, hide_index=True, use_container_width=True, height=400)
-with mtl_2: #Fragen können hier hinzugefügt werden
-    with st.form("add_question"):
-        lecture_titel = st.selectbox("Vorlesung", [lecture.title for lecture in get_all_lectures()], index=None, placeholder="Wählen Sie eine Vorlesung aus")
-        #Fragen Inputfelder und submit button nur aktiviert wenn eine Vorlesung ausgewählt wurde
-        if lecture_titel:
-            st.session_state.mtl_question_disable = True
+with mtl_2:  # Fragen können hier hinzugefügt werden
+    # Initialisiere die Optionen in st.session_state
+    if "options" not in st.session_state:
+        st.session_state.options = ["", ""]  # Mindestens 2 leere Felder vorinitialisieren
+
+    # Funktion zum Hinzufügen einer neuen Option
+    def add_option():
+        if len(st.session_state.options) < 4:  # Maximal 4 Optionen zulassen
+            st.session_state.options.append("")
         else:
-            st.session_state.mtl_question_disable = False
+            st.toast("Maximal 4 Antwortmöglichkeiten erlaubt", icon="⚠️")
+
+    # Funktion zum Entfernen einer Option
+    def remove_option(index):
+        if len(st.session_state.options) > 2:  # Mindestens 2 Optionen beibehalten
+            st.session_state.options.pop(index)
+        else:
+            st.toast("Mindestens 2 Antwortmöglichkeiten erforderlich", icon="⚠️")
+
+    # Formular für die Frageeingabe
+    with st.form("add_question", clear_on_submit=True):
+        # Auswahl der Vorlesung
+        lecture_titel = st.selectbox(
+            "Vorlesung",
+            [lecture.title for lecture in get_all_lectures()],
+            index=None,
+            placeholder="Wählen Sie eine Vorlesung aus",
+        )
         frage = st.text_input("Frage:")
-        option_1 = st.text_input("Option 1:")
-        option_2 = st.text_input("Option 2:")
-        option_3 = st.text_input("Option 3:")
-        option_4 = st.text_input("Option 4:")
-        antwort = st.selectbox("Antwort", ["Option 1", "Option 2", "Option 3", "Option 4"], index=None, placeholder="Wählen Sie richtige Antwort aus")
+
+        # Dynamische Antwortmöglichkeiten
+        st.subheader("Antwortmöglichkeiten")
+        for i, option in enumerate(st.session_state.options):
+            col1, col2 = st.columns([4, 1])  # Zwei Spalten für Eingabefeld und Entfernen-Button
+            with col1:
+                st.session_state.options[i] = st.text_input(
+                    f"Option {i + 1}:", value=option, key=f"option_{i}"
+                )
+            with col2:
+                if len(st.session_state.options) > 2:  # Entfernen-Button nur aktiv, wenn mehr als 2 Optionen
+                    if st.form_submit_button(f"❌ Entfernen Option {i + 1}"):
+                        remove_option(i)
+                        st.rerun()
+
+        # Button zum Hinzufügen neuer Optionen (innerhalb des Formulars)
+        if len(st.session_state.options) < 4:
+            if st.form_submit_button("Option hinzufügen"):
+                add_option()
+                st.rerun()
+
+        # Dynamische Antwort-Selectbox basierend auf den vorhandenen Optionen
+        antwort = st.selectbox(
+            "Antwort",
+            [f"Option {i + 1}" for i in range(len(st.session_state.options))],
+            index=0,
+            placeholder="Wählen Sie die richtige Antwort aus",
+        )
+
+        # Formular-Submit-Button
         submit_button = st.form_submit_button("Frage hinzufügen")
-    def validate_lecture_input():
+
+    # Validierungsfunktion
+    def validate_input():
         if not lecture_titel:
             st.toast("Bitte wählen Sie eine Vorlesung aus", icon="❌")
             return False
         elif not frage:
             st.toast("Bitte geben Sie eine Frage ein", icon="❌")
             return False
-        elif not option_1:
-            st.toast("Bitte geben Sie Option 1 ein", icon="❌")
-            return False
-        elif not option_2:
-            st.toast("Bitte geben Sie Option 2 ein", icon="❌")
-            return False
-        elif not option_3:
-            st.toast("Bitte geben Sie Option 3 ein", icon="❌")
-            return False
-        elif not option_4:
-            st.toast("Bitte geben Sie Option 4 ein", icon="❌")
+        elif len(st.session_state.options) < 2:
+            st.toast(
+                "Bitte geben Sie mindestens zwei Antwortmöglichkeiten ein", icon="❌"
+            )
             return False
         elif not antwort:
             st.toast("Bitte wählen Sie eine Antwort aus", icon="❌")
             return False
         else:
             return True
+
+    # Daten speichern
     if submit_button:
-        if validate_lecture_input():
-            add_mtl_question(lecture_titel, frage, option_1, option_2, option_3, option_4, antwort)
-            st.rerun() # Seite aktualisieren, um daten zu aktualisieren
+        if validate_input():
+            # Maximal 4 Optionen speichern, leere Felder auffüllen
+            options = st.session_state.options + [""] * (4 - len(st.session_state.options))
+            add_mtl_question(
+                lecture_titel,
+                frage,
+                options[0],
+                options[1],
+                options[2],
+                options[3],
+                antwort,
+            )
+            st.toast("Frage hinzugefügt!", icon="🎉")
+            st.session_state.options = ["", ""]  # Zurücksetzen auf die initialen 2 leeren Felder
+            st.rerun()
+
+
 with mtl_3:
     question_data = get_all_mtl_questions()
     question_df = pd.DataFrame([question.dict() for question in question_data],
@@ -366,8 +423,8 @@ with mtl_3:
             options_4=row['options_4'], 
             answer=row['answer']
         )
-     # Löschen von Multiple-Choice-Fragen
-    with st.form(key='MTL_löschen'):
+    # Löschen von Multiple-Choice-Fragen
+    with st.form(key='MTL_löschen', clear_on_submit=True):
         st.subheader("Multiple Choice Frage löschen")
         question_id = st.text_input("Frage ID", placeholder="Nummer aus der ID-Spalte z.B. 1 oder 43")
         delete_button = st.form_submit_button("Frage löschen", type="primary")
