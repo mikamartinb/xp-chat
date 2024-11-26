@@ -1,6 +1,11 @@
 import streamlit as st
 import random
 from SQLmodule_commands import get_all_mtl_questions, get_all_lectures
+from model_utils import initialize_model
+from langchain.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser, CommaSeparatedListOutputParser
+
+llm = initialize_model()
 
 st.set_page_config(
     page_title="Home",
@@ -37,7 +42,7 @@ with st.sidebar:
         st.session_state.is_admin = False
         st.toast("Erfolgreich abgemeldet.", icon='👋')
         st.switch_page("app.py")
-    st.sidebar.markdown("Made with 💙 by ChatXP")
+    st.sidebar.markdown("Made with 💙")
 
 # CSS zum Anpassen der Logo-Größe
 st.markdown(
@@ -69,11 +74,13 @@ lecture_titles = [lec.title for lec in lectures]
 
 # Auswahl der gefilterten Vorlesungen
 selected_lecture_titles = st.multiselect(
-    "",
+    "Vorlesungen auswählen",  # Gib ein Label an, das für Barrierefreiheit verwendet wird
     lecture_titles,
     [],
-    placeholder="Wähle die Vorlesungen aus die du lernen die du möchtest"
+    placeholder="Wähle eine oder mehrere Vorlesungen",
+    label_visibility="collapsed"  # Das Label wird versteckt
 )
+
 
 # Filtern der lecture_ids basierend auf den ausgewählten Titeln
 selected_lecture_ids = [
@@ -87,7 +94,7 @@ filtered_questions = [
 
 # Hinweis anzeigen, falls keine Fragen vorhanden sind
 if not filtered_questions:
-    st.warning("Keine Fragen gefunden für die ausgewählten Vorlesungen.")
+    st.warning("Keine Vorlesung ausgewählt!")
 else:
     # Initialize session state variables if they don't exist
     if 'current_index' not in st.session_state:
@@ -112,23 +119,34 @@ else:
         st.session_state.selected_option = None
         st.session_state.answer_submitted = False
         random.shuffle(filtered_questions)  # Mischt die Fragen bei jedem Neustart
+
+        #TODO
+        # for question in filtered_questions:
+        #     question.question_text = rephrase_question_with_llm(question.question_text)
+
         st.session_state.shuffled_options = []
         st.session_state.current_question = filtered_questions[st.session_state.current_index]
         st.session_state.options_shuffled = False  # Reset shuffle flag for the first question
         shuffle_options()  # Optionen für die erste Frage mischen
 
+
     # Function to shuffle options for the current question
     def shuffle_options():
         options = [
-            st.session_state.current_question.options_1,
-            st.session_state.current_question.options_2,
-            st.session_state.current_question.options_3,
-            st.session_state.current_question.options_4
-        ]
-        random.shuffle(options)  # Mischt die Optionen
+            getattr(st.session_state.current_question, f"options_{i}")
+            for i in range(1, 5)
+            if getattr(st.session_state.current_question, f"options_{i}", None)
+        ]  # Dynamische Optionen-Liste
+        random.shuffle(options) 
         st.session_state.shuffled_options = options
-        correct_answer_option = f"options_{st.session_state.current_question.answer[-1]}"
-        st.session_state.correct_answer = options.index(getattr(st.session_state.current_question, correct_answer_option))
+        correct_answer_option = getattr(
+            st.session_state.current_question,
+            f"options_{st.session_state.current_question.answer[-1]}"
+        )
+        st.session_state.correct_answer = options.index(correct_answer_option)
+        
+        #TODO: options = rephrase_answers_with_llm(question=st.session_state.current_question, options=options)
+        
         st.session_state.options_shuffled = True  # Set shuffle flag to True after shuffling
 
     # Load the first question and shuffle options if no question is loaded
