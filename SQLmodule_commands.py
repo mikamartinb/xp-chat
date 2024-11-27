@@ -326,6 +326,108 @@ def get_user_full_name(matrikelnummern):
         else:
             return None
 
+def get_user_progress(matrikelnummern):
+    """
+    Holt den Lernfortschritt des Benutzers basierend auf der Matrikelnummer.
+    """
+    with Session(engine) as session:
+        # Gesamtanzahl der Fragen in der Datenbank
+        total_questions = len(session.exec(select(MTL_Question)).all())
+
+        # Anzahl der beantworteten Fragen des Benutzers
+        answered_data = session.exec(
+            select(UserProgress.correct_count)
+            .where(UserProgress.matrikelnummern == matrikelnummern)
+        ).all()
+
+        # Kategorien zählen
+        not_answered = total_questions - len(answered_data)
+        wrong = sum(1 for x in answered_data if x == 0)
+        one_to_two = sum(1 for x in answered_data if 1 <= x <= 2)
+        three_or_more = sum(1 for x in answered_data if x >= 3)
+
+        return {
+            "Noch nicht beantwortet": not_answered,
+            "Falsch beantwortet": wrong,
+            "1-2 richtig beantwortet": one_to_two,
+            "3-mal richtig beantwortet": three_or_more,
+        }
+
+def get_not_answered_questions(matrikelnummern):
+    with Session(engine) as session:
+        # IDs aller Fragen
+        all_questions = session.exec(select(MTL_Question.id)).all()
+        # IDs der beantworteten Fragen
+        answered_questions = session.exec(
+            select(UserProgress.question_id)
+            .where(UserProgress.matrikelnummern == matrikelnummern)
+        ).all()
+        # Nicht beantwortete Fragen herausfiltern
+        not_answered_ids = set(all_questions) - set(answered_questions)
+        # Fragen und ihre Vorlesungstitel mit JOIN abrufen
+        not_answered_questions = session.exec(
+            select(MTL_Question, Lecture.title)
+            .join(Lecture, MTL_Question.lecture_id == Lecture.id)
+            .where(MTL_Question.id.in_(not_answered_ids))
+        ).all()
+
+        # Rückgabe als Liste von Dictionaries, um die Daten leichter zugänglich zu machen
+        return [
+            {
+                "question": question,
+                "lecture_title": lecture_title
+            }
+            for question, lecture_title in not_answered_questions
+        ]
 
 
+
+def get_wrong_questions(matrikelnummern):
+    with Session(engine) as session:
+        wrong_questions = session.exec(
+            select(MTL_Question, Lecture.title)
+            .join(Lecture, MTL_Question.lecture_id == Lecture.id)
+            .join(UserProgress, UserProgress.question_id == MTL_Question.id)
+            .where(UserProgress.matrikelnummern == matrikelnummern, UserProgress.correct_count == 0)
+        ).all()
+        return [
+            {
+                "question": question,
+                "lecture_title": lecture_title
+            }
+            for question, lecture_title in wrong_questions
+        ]
+
+
+def get_one_to_two_correct_questions(matrikelnummern):
+    with Session(engine) as session:
+        questions = session.exec(
+            select(MTL_Question, Lecture.title)
+            .join(Lecture, MTL_Question.lecture_id == Lecture.id)
+            .join(UserProgress, UserProgress.question_id == MTL_Question.id)
+            .where(UserProgress.matrikelnummern == matrikelnummern, UserProgress.correct_count.between(1, 2))
+        ).all()
+        return [
+            {
+                "question": question,
+                "lecture_title": lecture_title
+            }
+            for question, lecture_title in questions
+        ]
+
+def get_three_or_more_correct_questions(matrikelnummern):
+    with Session(engine) as session:
+        questions = session.exec(
+            select(MTL_Question, Lecture.title)
+            .join(Lecture, MTL_Question.lecture_id == Lecture.id)
+            .join(UserProgress, UserProgress.question_id == MTL_Question.id)
+            .where(UserProgress.matrikelnummern == matrikelnummern, UserProgress.correct_count >= 3)
+        ).all()
+        return [
+            {
+                "question": question,
+                "lecture_title": lecture_title
+            }
+            for question, lecture_title in questions
+        ]
 

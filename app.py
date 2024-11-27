@@ -19,7 +19,8 @@ st.set_page_config(
     }
 )
 
-create_tables()  # Erstellt die Tabellen in der Datenbank und checkt, ob sie schon existieren
+
+#create_tables()  # Erstellt die Tabellen in der Datenbank und checkt, ob sie schon existieren
 #create_admin_user()  # Einmalig ausführen, um einen Admin zu erstellen
 
 # Initialisiere Session-Variablen nur, wenn sie noch nicht gesetzt sind
