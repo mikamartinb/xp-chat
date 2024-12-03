@@ -12,9 +12,13 @@ st.set_page_config(
     }
 )
 
+# --- Sidebar ---
 with st.sidebar:
-    #st.logo("")
-    st.header("Herzlich Willkommen!", divider="red")
+    st.logo(
+        image="images/Logo_LerniPhant_500x500-removebg.png",
+        icon_image="images/Elefant.png"
+    )
+    st.header("Herzlich Willkommen!", divider="blue")
     st.page_link("pages/home.py",label="Home", icon="🏠")
     st.page_link("pages/stats.py",label="Meine Statistik", icon="📊")
     st.write("Lernen")
@@ -24,14 +28,33 @@ with st.sidebar:
     st.divider()
     # Admin-Seite nur hinzufügen, wenn der Benutzer Admin-Rechte hat
     if st.session_state.get("is_admin", True):
-        st.page_link("pages/admin.py",label="Admin", icon="🔒")
+        st.page_link("pages/admin.py",label="Rüsselraum", icon="🔒")
     st.page_link("pages/user_einstellung.py",label="User Einstellungen", icon="⚙️")
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.is_admin = False
         st.toast("Erfolgreich abgemeldet.", icon='👋')
         st.switch_page("app.py")
-    st.sidebar.markdown("Made with ❤️ by ChatXP")
+    st.sidebar.markdown("Made with 💙 by ChatXP")
+
+# CSS zum Anpassen der Logo-Größe
+st.markdown(
+    """
+    <style>
+    /* Anpassung des Logos in der Sidebar */
+    div[data-testid="stSidebarHeader"] img.stLogo{
+        height: auto; /* Gewünschte Höhe des Logos */
+        width: auto;   /* Automatische Anpassung der Breite */
+    }
+    /* Anpassung des Logos in der oberen linken Ecke */
+    div[data-testid="stSidebarCollapsedControl"] img.stLogo {
+        height: 100px; /* Gewünschte Höhe des Icons */
+        width: auto;  /* Automatische Anpassung der Breite */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown("<h1 style='text-align: center; color: white;'>Modus: Chatting 💬</h1>", unsafe_allow_html=True)
 

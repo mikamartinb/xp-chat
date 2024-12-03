@@ -19,66 +19,49 @@ st.set_page_config(
     }
 )
 
-def rephrase_question_with_llm(question):
-    # Umformulieren der Frage durch LLM
-    prompt_template = "Verändere diese Frage, ohne die darin enthaltenen Informationen zu ändern. Stelle den Satzbau komplett um: {question}"
-    prompt = PromptTemplate(input_variables=["question"], template=prompt_template)
-    chain = prompt | llm | StrOutputParser()
-
-    # Umformulierte Frage zurückgeben
-    return chain.invoke(question)
-
-def rephrase_answers_with_llm(question, options):
-    #options_str = str(options) 
-    
-    options_str = ", ".join([f'"{option}"' for option in options])  # Konvertiere Liste zu String im richtigen Format
-
-    # Initialisiere den Parser
-    output_parser = CommaSeparatedListOutputParser()
-
-    # Hole die Format-Anweisungen
-    format_instructions = output_parser.get_format_instructions()
-
-    # Prompt mit Format-Anweisungen erstellen
-    prompt_template = """
-        Du erhälst eine Frage und Antwort-Optionen. Du sollst die Antwort-Optionen so verändern, dass sie syntaktisch und semantisch korrekt auf die Frage antworten.
-        
-        FRAGE: {question}
-        
-        ANTWORT-OPTIONEN: {options}
-        
-        {format_instructions}
-    """
-    
-    prompt = PromptTemplate(
-        template=prompt_template,
-        input_variables=["question", "options"],
-        partial_variables={"format_instructions": format_instructions}
-    )
-
-    chain = prompt | llm 
-    
-    return output_parser.parse(chain.invoke({"question": question, "options": options_str}).content)
-    
-
+# --- Sidebar ---
 with st.sidebar:
-    st.header("Herzlich Willkommen!", divider="red")
-    st.page_link("pages/home.py", label="Home", icon="🏠")
-    st.page_link("pages/stats.py", label="Meine Statistik", icon="📊")
+    st.logo(
+        image="images/Logo_LerniPhant_500x500-removebg.png",
+        icon_image="images/Elefant.png"
+    )
+    st.header("Herzlich Willkommen!", divider="blue")
+    st.page_link("pages/home.py",label="Home", icon="🏠")
+    st.page_link("pages/stats.py",label="Meine Statistik", icon="📊")
     st.write("Lernen")
-    st.page_link("pages/multiple_choice.py", label="Multiple Choice", icon="🔘")
-    st.page_link("pages/open_questions.py", label="Open Questions", icon="📝")
-    st.page_link("pages/chatting.py", label="Chatten", icon="💬")
+    st.page_link("pages/multiple_choice.py",label="Multiple Choice", icon="🔘")
+    st.page_link("pages/open_questions.py",label="Open Questions", icon="📝")
+    st.page_link("pages/chatting.py",label="Chatten", icon="💬")
     st.divider()
+    # Admin-Seite nur hinzufügen, wenn der Benutzer Admin-Rechte hat
     if st.session_state.get("is_admin", True):
-        st.page_link("pages/admin.py", label="Admin", icon="🔒")
-    st.page_link("pages/user_einstellung.py", label="User Einstellungen", icon="⚙️")
+        st.page_link("pages/admin.py",label="Rüsselraum", icon="🔒")
+    st.page_link("pages/user_einstellung.py",label="User Einstellungen", icon="⚙️")
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.is_admin = False
         st.toast("Erfolgreich abgemeldet.", icon='👋')
         st.switch_page("app.py")
-    st.sidebar.markdown("Made with ❤️ by ChatXP")
+    st.sidebar.markdown("Made with 💙")
+
+# CSS zum Anpassen der Logo-Größe
+st.markdown(
+    """
+    <style>
+    /* Anpassung des Logos in der Sidebar */
+    div[data-testid="stSidebarHeader"] img.stLogo{
+        height: auto; /* Gewünschte Höhe des Logos */
+        width: auto;   /* Automatische Anpassung der Breite */
+    }
+    /* Anpassung des Logos in der oberen linken Ecke */
+    div[data-testid="stSidebarCollapsedControl"] img.stLogo {
+        height: 100px; /* Gewünschte Höhe des Icons */
+        width: auto;  /* Automatische Anpassung der Breite */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 st.markdown("<h1 style='text-align: center; color: white;'>Modus: Multiple Choice 🔘</h1>", unsafe_allow_html=True)
 
