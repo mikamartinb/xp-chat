@@ -5,7 +5,7 @@ from model_utils import initialize_model
 from langchain.prompts import PromptTemplate
 from langchain_core.output_parsers import StrOutputParser, CommaSeparatedListOutputParser
 
-llm = initialize_model()
+#llm = initialize_model()
 
 st.set_page_config(
     page_title="Home",
