@@ -63,7 +63,7 @@
 # If there are no options left, hide the menu.
 
 # Default: "auto"
-# toolbarMode = "auto"
+toolbarMode = "auto"
 
 # Controls whether to display the default sidebar page navigation in a
 # multi-page app. This only applies when app's pages are defined by the
@@ -286,24 +286,25 @@ serverPort = 8501
 
 # The preset Streamlit theme that your custom theme inherits from.
 # One of "light" or "dark".
-# base =
+#base="light"
 
 # Primary accent color for interactive elements.
-# primaryColor =
+primaryColor="#4e94d9"
 
 # Background color for the main content area.
-# backgroundColor =
+backgroundColor = "#FFFFFF"
 
 # Background color used for the sidebar and most interactive widgets.
-# secondaryBackgroundColor =
+secondaryBackgroundColor = "#F0F2F6"
 
 # Color used for almost all text.
-# textColor =
+textColor="#1b3d69"
 
 # Font family for all text in the app, except code blocks. One of "sans serif",
 # "serif", or "monospace".
-# font =
-
+#font = "monospace"
+#font = "sans serif"
+font = "serif"
 
 [secrets]
 
@@ -312,5 +313,5 @@ serverPort = 8501
 # Order is important, import is first to last, so secrets in later files
 # will take precedence over earlier ones.
 
-# Default: [ "/Users/jonne/.streamlit/secrets.toml", "/Users/jonne/Desktop/Jonne_Felix/Uni/5_Semster/KI-Entwicklung/xp-chat/.streamlit/secrets.toml",]
-# files = [ "/Users/jonne/.streamlit/secrets.toml", "/Users/jonne/Desktop/Jonne_Felix/Uni/5_Semster/KI-Entwicklung/xp-chat/.streamlit/secrets.toml",]
+# Default: 
+# files = 

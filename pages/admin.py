@@ -3,6 +3,7 @@ from sqlmodel import Session, select, create_engine, delete
 import json
 import pandas as pd
 import numpy as np
+import time
 from SQLmodule_commands import (
     create_tables, add_user_in_admin, get_unregistered_matrikelnummern, get_registered_user_ids,
     add_unregistered_matrikelnummern, delete_erlaubte_matrikelnummer, # Importiert Matrieklnummern Funktionen
@@ -13,7 +14,7 @@ from SQLmodule_commands import (
 
 # --- Seitenkonfiguration ---
 st.set_page_config(
-    page_title="Admin",
+    page_title="Rüsselraum",
     page_icon="🔒",
     layout="centered",
     initial_sidebar_state="expanded",
@@ -26,8 +27,11 @@ st.set_page_config(
 
 # --- Sidebar ---
 with st.sidebar:
-    #st.logo("")
-    st.header("Herzlich Willkommen!", divider="red")
+    st.logo(
+        image="images/Logo_LerniPhant_500x500-removebg.png",
+        icon_image="images/Elefant.png"
+    )
+    st.header("Herzlich Willkommen!", divider="blue")
     st.page_link("pages/home.py",label="Home", icon="🏠")
     st.page_link("pages/stats.py",label="Meine Statistik", icon="📊")
     st.write("Lernen")
@@ -37,19 +41,38 @@ with st.sidebar:
     st.divider()
     # Admin-Seite nur hinzufügen, wenn der Benutzer Admin-Rechte hat
     if st.session_state.get("is_admin", True):
-        st.page_link("pages/admin.py",label="Admin", icon="🔒")
+        st.page_link("pages/admin.py",label="Rüsselraum", icon="🔒")
     st.page_link("pages/user_einstellung.py",label="User Einstellungen", icon="⚙️")
     if st.button("Logout"):
         st.session_state.logged_in = False
         st.session_state.is_admin = False
         st.toast("Erfolgreich abgemeldet.", icon='👋')
         st.switch_page("app.py")
-    st.sidebar.markdown("Made with ❤️ by ChatXP")
+    st.sidebar.markdown("Made with 💙 by ChatXP")
+
+# CSS zum Anpassen der Logo-Größe
+st.markdown(
+    """
+    <style>
+    /* Anpassung des Logos in der Sidebar */
+    div[data-testid="stSidebarHeader"] img.stLogo{
+        height: auto; /* Gewünschte Höhe des Logos */
+        width: auto;   /* Automatische Anpassung der Breite */
+    }
+    /* Anpassung des Logos in der oberen linken Ecke */
+    div[data-testid="stSidebarCollapsedControl"] img.stLogo {
+        height: 100px; /* Gewünschte Höhe des Icons */
+        width: auto;  /* Automatische Anpassung der Breite */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 #color = st.get_option("theme.primaryColor") #Überlegung alle Farbe änderung damit zu ersetzen falls man später theme color ändern will
 
 # --- Page Content ---
-st.title(":red[Admin] Dashboard :lock:")
+st.title(":blue[Rüsselraum] Dashboard :lock:")
 
 # --- Dashboard ---
 col1, col2, col3 = st.columns(3) 
@@ -305,103 +328,139 @@ with mtl_1:
     )
     st.dataframe(question_df, hide_index=True, use_container_width=True, height=400)
 with mtl_2:  # Fragen können hier hinzugefügt werden
-    # Initialisiere die Optionen in st.session_state
-    if "options" not in st.session_state:
-        st.session_state.options = ["", ""]  # Mindestens 2 leere Felder vorinitialisieren
+    with st.container(border=True):
+        # Initialisiere die Formulardaten, falls sie nicht existieren
+        if "form_data" not in st.session_state or not isinstance(st.session_state.form_data, dict):
+            st.session_state.form_data = {
+                "frage": "",
+                "options": ["", ""],  # Mindestens 2 leere Felder
+                "lecture_index": None,  # Index für die Lecture-Selectbox
+                "answer_index": None,  # Index für die Antwort-Selectbox
+                "valid": False,  # Status des Formulars
+            }
 
-    # Funktion zum Hinzufügen einer neuen Option
-    def add_option():
-        if len(st.session_state.options) < 4:  # Maximal 4 Optionen zulassen
-            st.session_state.options.append("")
-        else:
-            st.toast("Maximal 4 Antwortmöglichkeiten erlaubt", icon="⚠️")
+        # Initialisiere Toast-Status
+        if "toast_message" not in st.session_state:
+            st.session_state.toast_message = None
 
-    # Funktion zum Entfernen einer Option
-    def remove_option(index):
-        if len(st.session_state.options) > 2:  # Mindestens 2 Optionen beibehalten
-            st.session_state.options.pop(index)
-        else:
-            st.toast("Mindestens 2 Antwortmöglichkeiten erforderlich", icon="⚠️")
+        # Funktion zum Zurücksetzen der Formulardaten
+        def reset_form():
+            st.session_state.form_data = {
+                "frage": "",
+                "options": ["", ""],
+                "lecture_index": None,
+                "answer_index": None,
+                "valid": False,
+            }
 
-    # Formular für die Frageeingabe
-    with st.form("add_question", clear_on_submit=True):
-        # Auswahl der Vorlesung
+        # Funktion zum Hinzufügen einer neuen Option
+        def add_option():
+            if len(st.session_state.form_data["options"]) < 4:
+                st.session_state.form_data["options"].append("")
+            else:
+                st.toast("Maximal 4 Antwortmöglichkeiten erlaubt", icon="⚠️")
+
+        # Funktion zum Entfernen einer Option
+        def remove_option(index):
+            if len(st.session_state.form_data["options"]) > 2:
+                st.session_state.form_data["options"].pop(index)
+            else:
+                st.toast("Mindestens 2 Antwortmöglichkeiten erforderlich", icon="⚠️")
+
+        # Formular für die Frageeingabe
+        st.subheader("Frage hinzufügen")
+
+        # Dynamische Auswahl der Vorlesung
+        all_lectures = [lecture.title for lecture in get_all_lectures()]
         lecture_titel = st.selectbox(
             "Vorlesung",
-            [lecture.title for lecture in get_all_lectures()],
-            index=None,
+            options=all_lectures,
+            index=st.session_state.form_data.get("lecture_index", 0),
             placeholder="Wählen Sie eine Vorlesung aus",
         )
-        frage = st.text_input("Frage:")
+        st.session_state.form_data["lecture_index"] = (
+            None if lecture_titel is None else all_lectures.index(lecture_titel)
+        )
+
+        # Eingabefeld für die Frage
+        st.session_state.form_data["frage"] = st.text_input(
+            "Frage:", value=st.session_state.form_data["frage"]
+        )
 
         # Dynamische Antwortmöglichkeiten
         st.subheader("Antwortmöglichkeiten")
-        for i, option in enumerate(st.session_state.options):
-            col1, col2 = st.columns([4, 1])  # Zwei Spalten für Eingabefeld und Entfernen-Button
+        for i, option in enumerate(st.session_state.form_data["options"]):
+            col1, col2 = st.columns([4, 1])
             with col1:
-                st.session_state.options[i] = st.text_input(
+                st.session_state.form_data["options"][i] = st.text_input(
                     f"Option {i + 1}:", value=option, key=f"option_{i}"
                 )
             with col2:
-                if len(st.session_state.options) > 2:  # Entfernen-Button nur aktiv, wenn mehr als 2 Optionen
-                    if st.form_submit_button(f"❌ Entfernen Option {i + 1}"):
+                if len(st.session_state.form_data["options"]) > 2:
+                    if st.button(f"❌ Entfernen Option {i + 1}", key=f"remove_option_{i}"):
                         remove_option(i)
                         st.rerun()
 
-        # Button zum Hinzufügen neuer Optionen (innerhalb des Formulars)
-        if len(st.session_state.options) < 4:
-            if st.form_submit_button("Option hinzufügen"):
+        # Button zum Hinzufügen neuer Antwortmöglichkeiten
+        if len(st.session_state.form_data["options"]) < 4:
+            if st.button("Option hinzufügen"):
                 add_option()
                 st.rerun()
 
-        # Dynamische Antwort-Selectbox basierend auf den vorhandenen Optionen
-        antwort = st.selectbox(
+        # Dynamische Antwort-Selectbox
+        answer_options = [f"Option {i + 1}" for i in range(len(st.session_state.form_data["options"]))]
+        antwort_index = st.selectbox(
             "Antwort",
-            [f"Option {i + 1}" for i in range(len(st.session_state.options))],
-            index=0,
+            options=answer_options,
+            index=st.session_state.form_data.get("answer_index", 0),
             placeholder="Wählen Sie die richtige Antwort aus",
+        )
+        st.session_state.form_data["answer_index"] = (
+            None if antwort_index is None else answer_options.index(antwort_index)
         )
 
         # Formular-Submit-Button
-        submit_button = st.form_submit_button("Frage hinzufügen")
+        if st.button("Frage hinzufügen", type="primary"):
+            # Validierungsfunktion
+            def validate_input():
+                if st.session_state.form_data["lecture_index"] is None:
+                    st.toast("Bitte wählen Sie eine Vorlesung aus", icon="❌")
+                    return False
+                elif not st.session_state.form_data["frage"]:
+                    st.toast("Bitte geben Sie eine Frage ein", icon="❌")
+                    return False
+                elif len(st.session_state.form_data["options"]) < 2:
+                    st.toast("Bitte geben Sie mindestens zwei Antwortmöglichkeiten ein", icon="❌")
+                    return False
+                elif st.session_state.form_data["answer_index"] is None:
+                    st.toast("Bitte wählen Sie eine gültige Antwort aus", icon="❌")
+                    return False
+                return True
 
-    # Validierungsfunktion
-    def validate_input():
-        if not lecture_titel:
-            st.toast("Bitte wählen Sie eine Vorlesung aus", icon="❌")
-            return False
-        elif not frage:
-            st.toast("Bitte geben Sie eine Frage ein", icon="❌")
-            return False
-        elif len(st.session_state.options) < 2:
-            st.toast(
-                "Bitte geben Sie mindestens zwei Antwortmöglichkeiten ein", icon="❌"
-            )
-            return False
-        elif not antwort:
-            st.toast("Bitte wählen Sie eine Antwort aus", icon="❌")
-            return False
-        else:
-            return True
+            if validate_input():
+                # Optionen normalisieren
+                options = st.session_state.form_data["options"] + [""] * (
+                    4 - len(st.session_state.form_data["options"])
+                )
+                add_mtl_question(
+                    all_lectures[st.session_state.form_data["lecture_index"]],
+                    st.session_state.form_data["frage"],
+                    options[0],
+                    options[1],
+                    options[2],
+                    options[3],
+                    f"Option {st.session_state.form_data['answer_index'] + 1}",
+                )
+                # Setze die Toast-Message in den Session-State
+                st.session_state.toast_message = "Frage hinzugefügt! 🎉"
+                reset_form()
+                st.rerun()
 
-    # Daten speichern
-    if submit_button:
-        if validate_input():
-            # Maximal 4 Optionen speichern, leere Felder auffüllen
-            options = st.session_state.options + [""] * (4 - len(st.session_state.options))
-            add_mtl_question(
-                lecture_titel,
-                frage,
-                options[0],
-                options[1],
-                options[2],
-                options[3],
-                antwort,
-            )
-            st.toast("Frage hinzugefügt!", icon="🎉")
-            st.session_state.options = ["", ""]  # Zurücksetzen auf die initialen 2 leeren Felder
-            st.rerun()
-
+        # Zeige den Toast nach dem Neuladen
+        if st.session_state.toast_message:
+            st.toast(st.session_state.toast_message, icon="✅")
+            # Setze die Nachricht zurück, um sie nur einmal anzuzeigen
+            st.session_state.toast_message = None
 
 with mtl_3:
     question_data = get_all_mtl_questions()

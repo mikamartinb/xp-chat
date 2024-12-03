@@ -30,6 +30,15 @@ if "is_admin" not in st.session_state:
 if "page" not in st.session_state:
     st.session_state.page = "login"  # Standardmäßig auf die Login-Seite setzen
 
+
+# Erstellen von drei Spalten
+left_column, center_column, right_column = st.columns([1, 2, 1])
+
+# Platzieren des Bildes in der mittleren Spalte
+with center_column:
+    st.image("images/Logo_LerniPhant_2000x2000-removebg.png", width=400)
+
+
 def registration_page():
     # Formular für die Registrierung
     with st.form(key='Registrierung'):
@@ -137,7 +146,7 @@ def login_page():
     try:    
         st.header("Login")
         with st.form(key='Login'):
-            matrikelnummern = st.text_input("Matrikelnummer", placeholder="z.B. 30400")
+            matrikelnummern = st.text_input("Matrikelnummer", placeholder="z.B. 30400", autocomplete="username")
             passwort = st.text_input("Passwort", placeholder="z.B. Max!1234", type="password")
             if st.form_submit_button("Login", type="primary"):
                 if login_check(matrikelnummern, passwort) == True:
