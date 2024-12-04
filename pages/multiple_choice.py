@@ -193,6 +193,7 @@ else:
             correct_index = st.session_state.correct_answer
             if st.session_state.selected_option == correct_index:
                 st.session_state.score += 10
+            st.rerun()  # Anwendung neu laden, damit der Zustand aktualisiert wird
         else:
             st.warning("Bitte wählen Sie eine Option aus, bevor Sie sie absenden.")
 
@@ -204,9 +205,11 @@ else:
             st.session_state.answer_submitted = False
             st.session_state.current_question = filtered_questions[st.session_state.current_index]
             st.session_state.options_shuffled = False
+            st.rerun()  # Anwendung neu laden, damit die nächste Frage angezeigt wird
         else:
             st.write(f"Quiz beendet! Ihr Endergebnis ist: {st.session_state.score} / {len(filtered_questions) * 10}")
-            st.button('Neu starten', on_click=restart_quiz)
+            if st.button('Neu starten', on_click=restart_quiz):
+                st.rerun()  # Quiz neu starten und Zustand zurücksetzen
 
     # Quiz-Fortschritt
     progress_bar_value = (st.session_state.current_index + 1) / len(filtered_questions)
