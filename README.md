@@ -16,8 +16,8 @@ conda deactivate
 Um das Repository zu klonen, führe folgenden Befehl in deinem Terminal aus:
 
 ```bash
-git clone <URL-ZUM-REPOSITORY>
-cd <REPOSITORY-NAME>
+git clone https://github.com/mikamartinb/xp-chat.git
+cd xp-chat
 ```
 
 ### 3. Erstellen einer virtuellen Umgebung (venv)
@@ -117,3 +117,5 @@ Um die Streamlit App zu starten, gehe wie folgt vor:
    **Hinweis**: Ersetze `Home.py` durch den entsprechenden Dateinamen, falls deine Startdatei einen anderen Namen hat.
 
 ---
+
+

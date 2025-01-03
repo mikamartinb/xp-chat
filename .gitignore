@@ -1,5 +1,17 @@
-__pycache__/
-venv/
-meinvenv/
+#Keys and secrets
 key.secret/
 key.secret
+*.env
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment folders
+env/
+venv/
+meinvenv/
+
+# System files
+.DS_Store
