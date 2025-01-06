@@ -93,17 +93,22 @@ def clear_vector_store(page_name):
         print("Vectorstore wurde gelöscht.")
         
 def process_string(input_string):
-    start = input_string.find("Question")
+    # Findet die Position des ersten '**'
+    start = input_string.find("**")
     if start == -1:
-        return "Keyword 'Question' nicht gefunden."
-    
+        return "Kein '**' gefunden."
+
+    # Findet die Position der letzten ')'
     end = input_string.rfind(")")
     if end == -1:
         return "Keine schließende Klammer ')' gefunden."
-    
-    # Extrahiere den Teil zwischen "Question" und ")"
+
+    # Schneidet den String entsprechend zu und behält '**' und ')' bei
     result = input_string[start:end + 1]
     return result
+
+
+
         
 def generate_exam(form):
     
@@ -180,7 +185,7 @@ def rag_generate_exam(form, vectorstore):
     
     This is the number of Questions you should create: {form["num_tasks"]} \n
     
-    If multi_select == 1, multiple answers can be an answer of one question. Half of the questions must have more than one correct answer if multi_select == 1. If multi_select == 0, only one answer can be the answer of one question: multi_select: {form["multi_select"]}\n
+    If multi_select == 1, multiple answers can be an answer of one question. Half of the questions must have more than one correct answer if multi_select == 1. If multi_select == 0, only one answer can be the answer of one question: multi_select: {form["multi_select"]}. However, 50% of all questions must be answered by ONLY one option\n
     
     ***EXAM STRUCTURE***
     Structure the generated text as follows. This must be the Output-Structure:
@@ -192,7 +197,7 @@ def rag_generate_exam(form, vectorstore):
     A) \n
     B) \n   
     C) \n
-    D) \n
+    D) \n\n
     
     Correct Answers: A) \n
     
@@ -205,13 +210,13 @@ def rag_generate_exam(form, vectorstore):
     A) \n
     B) \n   
     C) \n
-    D) \n
+    D) \n\n
     
     Correct Answers: A) & C) \n
     
     If two Answers are correct, use this format: Correct Answers: A) and B) \n
     
-    If more than two Answers are correct, separate them by commas and use this format: Correct Answers: A), B) and C).
+    If more than two Answers are correct, separate them by commas and use this format: Correct Answers: A), B) and C). IM
     """
 
 

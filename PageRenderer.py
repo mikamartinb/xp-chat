@@ -3,17 +3,12 @@ import os
 import io
 from docx import Document
 from model_utils import create_vector_store, clear_temp_files, clear_vector_store, generate_exam, rag_generate_exam
+# Importiere die neue Funktion
+from exam_utils import create_exam_document
 
 class PageRenderer:
 
     def render(self, page_name):
-        
-        def get_docx(text):
-            document = Document()
-            document.add_paragraph(text)
-            bio = io.BytesIO()
-            document.save(bio)
-            return bio.getvalue()
 
         st.write(f"# {page_name}")
 
@@ -78,19 +73,15 @@ class PageRenderer:
 
                     vector_store = create_vector_store(temp_files)
 
-                    #st.session_state[f'vector_store_{page_name}'] = vector_store
-
                     st.success("Successfully created Vector Store")
                     
-                    # RAG Generated Exam
-                    exam_string = rag_generate_exam(vectorstore=vector_store, form=st.session_state[f'form_data_{page_name}'])
-                    
-                    # Non-RAG Generated Exam
-                    #exam_string = generate_exam(form=st.session_state[f'form_data_{page_name}'])
-                    
-                    st.download_button("Download Exam", data=get_docx(exam_string), file_name=f"Exam_{page_name}.docx", mime="docx")
-
-
+                    #TODO: PDF Display
+                    st.download_button(
+                        "Download Exam", 
+                        data=create_exam_document(form=st.session_state[f'form_data_{page_name}'], vectorstore=vector_store, page_name=page_name), 
+                        file_name=f"Exam_{page_name}.docx", 
+                        mime="docx"
+                    )
 
                     # Nach dem Erstellen den temp_files-Ordner leeren
                     clear_temp_files()
