@@ -1,9 +1,6 @@
 import streamlit as st
 import os
-import io
-from docx import Document
-from model_utils import create_vector_store, clear_temp_files, clear_vector_store, generate_exam, rag_generate_exam
-# Importiere die neue Funktion
+from model_utils import create_vector_store, clear_temp_files, clear_vector_store
 from exam_utils import create_exam_document
 
 class PageRenderer:
@@ -32,12 +29,17 @@ class PageRenderer:
             if not st.session_state[f'form_submitted_{page_name}']:
                 with st.form(f"Form_{page_name}", clear_on_submit=True):
                     exam_topic = st.text_input(label="Exam Topic", placeholder="Exam Topic")
+                    university = st.text_input(label="University", placeholder="University")
+                    date = st.date_input(label="Date of the exam", value="today", format="DD.MM.YYYY")
+                    module = st.text_input(label="Module", placeholder="Module")
+                    semester = st.selectbox(label="Semester", options=["Wintersemester 2024/2025", "Sommersemester 2025", "Wintersemester 2025/2026", "Sommersemester 2026"], placeholder="Choose a Semester")
+                    professor = st.text_input(label="Professor", placeholder="The name of the professor or examiner")
                     exam_focus = st.text_area(label="Exam Focus", placeholder="Exam Focus", height=100)
                     irr_topics = st.text_area(label="Irrelevant Topics", placeholder="Irrelevant Topics", height=100)
                     num_tasks = st.number_input(label="Number of Tasks", min_value=1, max_value=40, placeholder="Number of Tasks")
                     max_points = st.number_input(label="Max Points per Tasks", min_value=1, max_value=100, placeholder="Max Points per Task")
                     multi_select = st.toggle("Multi Select")
-                    processing_time = st.number_input(label="Processing Time in Minutes", min_value=10, max_value=180, placeholder="Processing Time in Minutes")
+                    
 
                     submit_form = st.form_submit_button("Submit", use_container_width=True, disabled=not uploaded_files)
 
@@ -45,12 +47,16 @@ class PageRenderer:
 
                         st.session_state[f'form_data_{page_name}'].update({
                             'exam_topic': exam_topic,
+                            'university': university,
+                            'date': date,
+                            'module': module,
+                            'semester': semester,
+                            'professor': professor,
                             'exam_focus': exam_focus,
                             'irr_topics': irr_topics,
                             'num_tasks': num_tasks,
                             'max_points': max_points,
                             'multi_select': multi_select,
-                            'processing_time': processing_time,
                             'uploaded_files': uploaded_files
                         })
                         st.session_state[f'form_submitted_{page_name}'] = True

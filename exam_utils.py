@@ -27,16 +27,32 @@ def create_exam_document(form, vectorstore, page_name):
 
     # Erste Seite: Nur Titel in der Mitte der Seite
     # Leere Absätze hinzufügen, um Platz zu schaffen
-    for _ in range(10):  # Je nach Bedarf anpassen, hier 15 Absätze für Platz
+    for _ in range(5):  # Je nach Bedarf anpassen, hier 15 Absätze für Platz
         doc.add_paragraph()
 
     # Titel in der Mitte der Seite
     middle_paragraph = doc.add_paragraph()
     middle_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER  # Zentriert
     
-    middle_run = middle_paragraph.add_run(page_name)  # Titel (page_name)
+    middle_run = middle_paragraph.add_run(f"{form['module']}")  # Titel (page_name)
     middle_run.bold = True
-    middle_run.font.size = Pt(32)  # Titel-Schriftgröße 32
+    middle_run.font.size = Pt(24)  # Titel-Schriftgröße 32
+    
+    for _ in range(7):  # Je nach Bedarf anpassen, hier 15 Absätze für Platz
+        doc.add_paragraph()
+
+    # Untertitel (University, Date, Module, Professor, Semester)
+    subtitle_paragraph = doc.add_paragraph()
+    subtitle_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
+    subtitle_text = (
+        f"{form['university']}\n"
+        f"{form['date']}\n"
+        f"{form['module']}\n"
+        f"{form['professor']}\n"
+        f"{form['semester']}"
+    )
+    subtitle_run = subtitle_paragraph.add_run(subtitle_text)
+    subtitle_run.font.size = Pt(12)  # Schriftgröße für den Untertitel
 
     # Seitenumbruch, um die Fragen auf der nächsten Seite beginnen zu lassen
     doc.add_page_break()
