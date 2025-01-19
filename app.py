@@ -1,5 +1,6 @@
 import json
 from model_utils import create_vector_store
+from exam_utils import create_exam_document
 import streamlit as st
 import os
 from datetime import datetime
@@ -118,14 +119,15 @@ def class_page(class_name):
                 st.toast(f"Die files paths sind: {all_input_pdf_files}")
                 st.toast(f"Der Vektordatenbank speicher path ist: {vector_store_DIR}")
 
-                if create_vector_store(all_input_pdf_files, vector_store_DIR):
+                vector_store = create_vector_store(all_input_pdf_files, vector_store_DIR)
+                if vector_store:
                     st.success(f"PDFs for '{new_exam_name}' saved successfully!")
                     # hier muss die Logik die Exams zu erstellen 
-                    #if create_exam_from_vector_store(vector_store_DIR, exam_json_file_DIR):
-                        #st.success(f"PDFs for '{new_exam_name}' saved successfully!")
-                        # st.rerun()
-                    #else:
-                        #st.error(f"Error creating Exams for '{new_exam_name}'")
+                    if create_exam_document(exam_json_file_DIR, vector_store, class_name):
+                        st.success(f"PDFs for '{new_exam_name}' saved successfully!")
+                        st.rerun()
+                    else:
+                        st.error(f"Error creating Exams for '{new_exam_name}'")
                 else:
                     st.error(f"Error creating Vector Store and saving PDFs for '{new_exam_name}'")
 
@@ -142,12 +144,7 @@ def class_page(class_name):
     st.write("### Exams:")
     for exam in st.session_state.all_exams_in_class:
         with st.expander(exam):
-            col1, col2 = st.columns(2)
-            with col1:
-                st.write("Here comes the PDF Viwer")
-            with col2:
-                st.write("This is an exam.")
-                if st.button("Edit"):
+            if st.button("Use as template", key=f"{exam}_templateButton"):
                     st.session_state.current_page = exam
 
 # Add new class
