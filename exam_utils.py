@@ -13,22 +13,47 @@ def create_exam_document(JSON_DIR, vectorstore, page_name, output_DIR):
     with open(JSON_DIR) as json_file:
         form = json.load(json_file)
 
-     
-     
+    # create folder DOCX and PDF
+    if not os.path.exists(os.path.join(output_DIR, "DOCX")):
+        os.makedirs(os.path.join(output_DIR, "DOCX"))
+    if not os.path.exists(os.path.join(output_DIR, "PDF")):
+        os.makedirs(os.path.join(output_DIR, "PDF"))
+
         
-    exam_with = f"{page_name}_exam_with_answers.docx"
-    exam_without = f"{page_name}_exam_without_answers.docx"
+    exam_with_docx = f"{page_name}_exam_with_answers.docx"
+    exam_without_docx = f"{page_name}_exam_without_answers.docx"
     
-    exam_with_DIR = os.path.join(output_DIR, exam_with)
-    exam_without_DIR = os.path.join(output_DIR, exam_without)
+    exam_with_DIR_docx = os.path.join(output_DIR, "DOCX", exam_with_docx)
+    exam_without_DIR_docx = os.path.join(output_DIR, "DOCX", exam_without_docx)
+
+    exam_with_pdf = f"{page_name}_exam_with_answers.pdf"
+    exam_without_pdf = f"{page_name}_exam_without_answers.pdf"
+
+    exam_with_DIR_pdf = os.path.join(output_DIR, "PDF", exam_with_pdf)
+    exam_without_DIR_pdf = os.path.join(output_DIR, "PDF", exam_without_pdf)
+
+    print(f"Der Pfade vom mit output docx: {exam_with_DIR_docx}")
+    print(f"Der Pfade vom ohne output docx: {exam_without_DIR_docx}")
+
+    print(f"Der Pfade vom mit output pdf: {exam_with_DIR_pdf}")
+    print(f"Der Pfade vom ohne output pdf: {exam_without_DIR_pdf}")
+
+    print(f"Was ist hier im Vector Store?: {vectorstore}")
+
+    print("Form data loaded from JSON:")
+    for key, value in form.items():
+        print(f"{key}: {value}")
     
-    os.mkdir(exam_with_DIR)
-    os.mkdir(exam_without_DIR)
-    
-     # Pfad zum Logo direkt in der Methode definieren
+    # Pfad zum Logo direkt in der Methode definieren
     logo_path = "leuphana_logo.png"  # Ersetze dies durch den tatsächlichen Pfad
 
     exam_string = rag_generate_exam(form, vectorstore)
+
+    if exam_string:
+        print("Exam generated successfully.")
+    else:    
+        print("Error generating exam with Json Data or vectorstore")
+        return False
 
     # Funktion, um ein Dokument zu erstellen
     def create_document(filter_correct_answers=False):
@@ -153,14 +178,46 @@ def create_exam_document(JSON_DIR, vectorstore, page_name, output_DIR):
 
     # Dokumente erstellen und speichern
     doc_with_answers = create_document()
-    doc_without_answers = create_document(filter_correct_answers=True)
+    if doc_with_answers:
+        print("Document with answers created successfully.")
+    else:
+        print("Failed to create document with answers.")
+        return False
 
-    doc_with_answers.save(exam_with_DIR)
-    doc_without_answers.save(exam_without_DIR)
+    doc_without_answers = create_document(filter_correct_answers=True)
+    if doc_without_answers:
+        print("Document without answers created successfully.")
+    else:
+        print("Failed to create document without answers.")
+        return False
+
+    try:
+        doc_with_answers.save(exam_with_DIR_docx)
+        print(f"Document with answers saved successfully at {exam_with_DIR_docx}.")
+    except Exception as e:
+        print(f"Failed to save document with answers: {e}")
+        return False
+
+    try:
+        doc_without_answers.save(exam_without_DIR_docx)
+        print(f"Document without answers saved successfully at {exam_without_DIR_docx}.")
+    except Exception as e:
+        print(f"Failed to save document without answers: {e}")
+        return False
 
     # PDF-Konvertierung
-    convert(exam_with_DIR, output_path=output_DIR)
-    convert(exam_without_DIR, output_path=output_DIR)
+    try:
+        convert(exam_with_DIR_docx, exam_with_DIR_pdf)
+        print(f"PDF conversion for document with answers successful at {exam_with_DIR_pdf}")
+    except Exception as e:
+        print(f"Failed to convert document with answers to PDF: {e}")
+        return False
 
-    bio = io.BytesIO()
-    return bio.getvalue()
+    try:
+        convert(exam_without_DIR_docx, exam_without_DIR_pdf)
+        print(f"PDF conversion for document without answers successful at {exam_without_DIR_pdf}")
+    except Exception as e:
+        print(f"Failed to convert document without answers to PDF: {e}")
+        return False
+
+    return True

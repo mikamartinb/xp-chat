@@ -133,3 +133,7 @@ Um die Streamlit App zu starten, gehe wie folgt vor:
    **Hinweis**: Ersetze `Home.py` durch den entsprechenden Dateinamen, falls deine Startdatei einen anderen Namen hat.
 
 ---
+
+Für deploment in .Config File:
+[browser]
+serverAddress = "aixaiprojekt.leuphana.de"

@@ -18,3 +18,4 @@ transformers
 sentence-transformers
 pypdf
 python-dotenv
+docx2pdf
