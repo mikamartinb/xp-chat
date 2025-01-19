@@ -4,11 +4,16 @@ from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Inches
 from model_utils import rag_generate_exam
+import os
+import json
 
-def create_exam_document(form, vectorstore, page_name):
+def create_exam_document(JSON_DIR, vectorstore, page_name):
     # Pfad zum Logo direkt in der Methode definieren
     logo_path = "leuphana_logo.png"  # Ersetze dies durch den tatsächlichen Pfad
 
+    with open(JSON_DIR) as json_file:
+        form = json.load(json_file)
+        
     exam_string = rag_generate_exam(form, vectorstore)
     
     # Neues Dokument erstellen
@@ -123,6 +128,8 @@ def create_exam_document(form, vectorstore, page_name):
         paragraph.paragraph_format.keep_together = True
 
     # Dokument speichern
+    
+    #TODO: Hier noch anpassen
     bio = io.BytesIO()
     doc.save(bio)
     return bio.getvalue()
