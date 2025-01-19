@@ -5,9 +5,6 @@ headless = true
 port = 5001
 address = "0.0.0.0"
 
-[browser]
-serverAddress = "aixaiprojekt.leuphana.de"
-
 [theme]
 primaryColor="#FF4B4B"
 backgroundColor="#FFFFFF"
