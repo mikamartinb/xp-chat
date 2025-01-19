@@ -118,12 +118,13 @@ def class_page(class_name):
                 vector_store_DIR = os.path.join(new_exam_DIR, "vector_store")
                 st.toast(f"Die files paths sind: {all_input_pdf_files}")
                 st.toast(f"Der Vektordatenbank speicher path ist: {vector_store_DIR}")
-
+                output_DIR = os.path.join(new_exam_DIR, "output")
+                output_DIR = os.mkdir(output_DIR)
                 vector_store = create_vector_store(all_input_pdf_files, vector_store_DIR)
                 if vector_store:
                     st.success(f"PDFs for '{new_exam_name}' saved successfully!")
                     # hier muss die Logik die Exams zu erstellen 
-                    if create_exam_document(exam_json_file_DIR, vector_store, class_name):
+                    if create_exam_document(exam_json_file_DIR, vector_store, class_name, output_DIR):
                         st.success(f"PDFs for '{new_exam_name}' saved successfully!")
                         st.rerun()
                     else:

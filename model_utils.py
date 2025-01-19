@@ -191,7 +191,7 @@ def rag_generate_exam(form, vectorstore):
     **Question {form["num_tasks"]}**
     Is this a sample question? \n\n
     
-    **Answers** \n
+    ++Answers++ \n
     A) \n
     B) \n   
     C) \n
