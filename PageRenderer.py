@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from model_utils import create_vector_store, clear_temp_files, clear_vector_store
+from model_utils import create_vector_store
 from exam_utils import create_exam_document
 
 class PageRenderer:
@@ -59,7 +59,6 @@ class PageRenderer:
                     submit_form = st.form_submit_button("Generate", use_container_width=True, disabled=not uploaded_files)
 
                     if submit_form:
-
                         st.session_state[f'form_data_{page_name}'].update({
                             'exam_topic': exam_topic,
                             'university': university,
@@ -105,14 +104,7 @@ class PageRenderer:
                         mime="docx"
                     )
 
-                    # Nach dem Erstellen den temp_files-Ordner leeren
-                    clear_temp_files()
-
                 # Back to Form-Button logik
                 if st.button("Back to Form"):
-                    # Vor dem Zurückkehren den Vectorstore und die temp_files löschen
-                    clear_temp_files()
-                    clear_vector_store(page_name)
-
                     st.session_state[f'form_submitted_{page_name}'] = False
                     st.rerun()

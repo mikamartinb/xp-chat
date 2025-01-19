@@ -15,3 +15,6 @@ meinvenv/
 
 # System files
 .DS_Store
+
+# Local Datenbank
+Classes/

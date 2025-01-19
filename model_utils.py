@@ -27,7 +27,7 @@ def initialize_model(selected_model="meta-llama-3.1-70b-instruct"):
     # Modell initialisieren
     return ChatOpenAI(model_name=selected_model, openai_api_key=api_key, openai_api_base=base_url, temperature=0.0)
 
-def create_vector_store(file_paths, model_name="all-MiniLM-L6-v2", save_path="vector_store"):
+def create_vector_store(file_paths, save_path, model_name="all-MiniLM-L6-v2"):
     """
     Diese Methode lädt mehrere PDFs von den angegebenen Pfaden, erstellt Dokumente mit Metadaten
     und speichert den Vektorspeicher im Arbeitsspeicher.
@@ -56,7 +56,8 @@ def create_vector_store(file_paths, model_name="all-MiniLM-L6-v2", save_path="ve
 
     # Erstelle den Vektorspeicher im Arbeitsspeicher
     vector_store = FAISS.from_documents(all_documents, embedding=embeddings)
-
+    vector_store.save_local(save_path)
+    
     return vector_store
 
 def load_or_create_vector_store(file_paths, model_name="all-MiniLM-L6-v2", save_path="vector_store"):
@@ -76,22 +77,6 @@ def load_or_create_vector_store(file_paths, model_name="all-MiniLM-L6-v2", save_
     vector_store = create_vector_store(file_paths, model_name=model_name, save_path=save_path)
     return vector_store
 
-def clear_temp_files():
-    """Löscht alle Dateien im temp_files Ordner"""
-    temp_dir = "./temp_files"
-    if os.path.exists(temp_dir):
-        for filename in os.listdir(temp_dir):
-            file_path = os.path.join(temp_dir, filename)
-            if os.path.isfile(file_path):
-                os.remove(file_path)
-        print("Temp files have been deleted.")
-
-def clear_vector_store(page_name):
-    """Löscht den Vectorstore aus dem Session-State"""
-    if f'vector_store_{page_name}' in st.session_state:
-        del st.session_state[f'vector_store_{page_name}']
-        print("Vectorstore has been deleted.")
-        
 def process_string(input_string):
     # Findet die Position des ersten '**'
     start = input_string.find("**")
