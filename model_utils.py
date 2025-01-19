@@ -84,24 +84,24 @@ def clear_temp_files():
             file_path = os.path.join(temp_dir, filename)
             if os.path.isfile(file_path):
                 os.remove(file_path)
-        print("Temp-Dateien wurden gelöscht.")
+        print("Temp files have been deleted.")
 
 def clear_vector_store(page_name):
     """Löscht den Vectorstore aus dem Session-State"""
     if f'vector_store_{page_name}' in st.session_state:
         del st.session_state[f'vector_store_{page_name}']
-        print("Vectorstore wurde gelöscht.")
+        print("Vectorstore has been deleted.")
         
 def process_string(input_string):
     # Findet die Position des ersten '**'
     start = input_string.find("**")
     if start == -1:
-        return "Kein '**' gefunden."
+        return "No '**' found."
 
     # Findet die Position der letzten ')'
     end = input_string.rfind(")")
     if end == -1:
-        return "Keine schließende Klammer ')' gefunden."
+        return "No closing bracket ')' found."
 
     # Schneidet den String entsprechend zu und behält '**' und ')' bei
     result = input_string[start:end + 1]
