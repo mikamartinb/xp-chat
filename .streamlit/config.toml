@@ -6,8 +6,8 @@ port = 5001
 address = "0.0.0.0"
 
 [theme]
-primaryColor="#FF4B4B"
-backgroundColor="#FFFFFF"
-secondaryBackgroundColor="#F0F2F6"
-textColor="#31333F"
+primaryColor="#10A37F"  
+backgroundColor="#202123"  
+secondaryBackgroundColor="#2B2D31"  
+textColor="#E0E0E0" 
 font="monospace"
