@@ -193,26 +193,26 @@ def rag_generate_exam(form, vectorstore):
     **Question 1**
     Is this a sample question? \n\n
     
-    **Answers** \n
+    ++Answers++ \n
     A) \n
     B) \n   
     C) \n
     D) \n\n
     
-    Correct Answers: A) \n
+    Correct Answers: A)%% \n
     
     ...
     
     **Question {form["num_tasks"]}**
     Is this a sample question? \n\n
     
-    **Answers** \n
+    ++Answers++ \n
     A) \n
     B) \n   
     C) \n
     D) \n\n
     
-    Correct Answers: A) & C) \n
+    Correct Answers: A) & C)%% \n
     
     If two Answers are correct, use this format: Correct Answers: A) and B) \n
     

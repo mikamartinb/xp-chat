@@ -81,6 +81,16 @@ class PageRenderer:
             else:
                 
                 vector_store = None
+                # Back to Form-Button logik
+                
+                if st.button("🔙"):
+                    # Vor dem Zurückkehren den Vectorstore und die temp_files löschen
+                    clear_temp_files()
+                    clear_vector_store(page_name)
+
+                    st.session_state[f'form_submitted_{page_name}'] = False
+                    st.rerun()
+                    
                 if st.button("Generate Exam"):
 
                     # Temporäre Dateien speichern
@@ -97,22 +107,19 @@ class PageRenderer:
 
                     st.success("Successfully created Vector Store")
                     
+                    exam_file = create_exam_document(form=st.session_state[f'form_data_{page_name}'], vectorstore=vector_store, page_name=page_name)
+                    
+                    
                     #TODO: PDF Display
                     st.download_button(
                         "Download Exam", 
-                        data=create_exam_document(form=st.session_state[f'form_data_{page_name}'], vectorstore=vector_store, page_name=page_name), 
+                        data=exam_file, 
                         file_name=f"Exam_{page_name}.docx", 
                         mime="docx"
                     )
+                    
+                
 
                     # Nach dem Erstellen den temp_files-Ordner leeren
                     clear_temp_files()
-
-                # Back to Form-Button logik
-                if st.button("Back to Form"):
-                    # Vor dem Zurückkehren den Vectorstore und die temp_files löschen
-                    clear_temp_files()
-                    clear_vector_store(page_name)
-
-                    st.session_state[f'form_submitted_{page_name}'] = False
-                    st.rerun()
+                    
