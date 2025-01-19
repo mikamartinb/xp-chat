@@ -76,17 +76,17 @@ def load_or_create_vector_store(file_paths, model_name="all-MiniLM-L6-v2", save_
     # In dieser Version speichern wir den Vektorspeicher nur im Arbeitsspeicher
     vector_store = create_vector_store(file_paths, model_name=model_name, save_path=save_path)
     return vector_store
-        
+
 def process_string(input_string):
     # Findet die Position des ersten '**'
     start = input_string.find("**")
     if start == -1:
-        return "Kein '**' gefunden."
+        return "No '**' found."
 
     # Findet die Position der letzten ')'
     end = input_string.rfind(")")
     if end == -1:
-        return "Keine schließende Klammer ')' gefunden."
+        return "No closing bracket ')' found."
 
     # Schneidet den String entsprechend zu und behält '**' und ')' bei
     result = input_string[start:end + 1]

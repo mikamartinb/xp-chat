@@ -16,6 +16,7 @@ if not os.path.exists(CLASSES_DIR):
 if "all_pages" not in st.session_state:
     st.session_state.all_pages = os.listdir(CLASSES_DIR)
 
+
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Home"
 
@@ -27,6 +28,7 @@ def home_page():
 # New Form Exam Page
 def newExam(new_exam_name):
     st.title(f"New Exam: {new_exam_name}")
+
 
 # Class page
 def class_page(class_name):
@@ -160,6 +162,7 @@ def create_new_page(page_name):
             st.session_state.all_pages.append(page_name)
             st.success(f"Class '{page_name}' created successfully!")
             st.session_state.current_page = page_name
+
             st.rerun()
     else:
         st.error(f"Maximum number of classes reached ({MAX_PAGES})!")
