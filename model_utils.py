@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Funktion zur Initialisierung des Modells
-def initialize_model(selected_model="meta-llama-3.1-70b-instruct"):
+def initialize_model(selected_model="meta-llama-3.3-70b-instruct"):
     # API Schlüssel laden
     config = configparser.ConfigParser()
     config_file_path = 'key.secret'
