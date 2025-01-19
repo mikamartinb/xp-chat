@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from model_utils import create_vector_store, clear_temp_files, clear_vector_store
+from model_utils import create_vector_store
 from exam_utils import create_exam_document
 
 class PageRenderer:
@@ -19,7 +19,7 @@ class PageRenderer:
             # Logik für PDF-Upload nur auf Unterseiten
             if not st.session_state[f'form_submitted_{page_name}']:
                 uploaded_files = st.file_uploader(
-                    "Ziehe eine PDF-Datei hierher oder wähle sie aus", 
+                    "Upload one or more PDFs before generation", 
                     type="pdf", 
                     key=f"uploader_{page_name}",
                     accept_multiple_files=True
@@ -28,34 +28,49 @@ class PageRenderer:
             # Formular nur anzeigen, wenn es nicht die Home-Seite ist und nicht bereits abgeschickt wurde
             if not st.session_state[f'form_submitted_{page_name}']:
                 with st.form(f"Form_{page_name}", clear_on_submit=True):
+                    st.markdown("\n")
+                    st.subheader("General Information", divider="gray")
                     exam_topic = st.text_input(label="Exam Topic", placeholder="Exam Topic")
                     university = st.text_input(label="University", placeholder="University")
                     date = st.date_input(label="Date of the exam", value="today", format="DD.MM.YYYY")
-                    module = st.text_input(label="Module", placeholder="Module")
-                    semester = st.selectbox(label="Semester", options=["Wintersemester 2024/2025", "Sommersemester 2025", "Wintersemester 2025/2026", "Sommersemester 2026"], placeholder="Choose a Semester")
-                    professor = st.text_input(label="Professor", placeholder="The name of the professor or examiner")
+                    c1, c2 = st.columns(2)
+                    with c1:
+                        module = st.text_input(label="Module", placeholder="Module", value=page_name)
+                        prof_title = st.selectbox(label="Title", options=["B. A.", "B. Sc.", "M. A.", "M. Sc.", "Dr.", "Prof.", "Prof. Dr.", "Prof. Dr. Dr."], placeholder="Choose Title", index=None)
+                    with c2:    
+                        semester = st.selectbox(label="Semester", options=["Wintersemester 2024/2025", "Sommersemester 2025", "Wintersemester 2025/2026", "Sommersemester 2026"], placeholder="Choose a Semester")
+                        professor = st.text_input(label="Examiner", placeholder="Max Mustermann")
+                        
+                    st.markdown("\n")
+                    st.subheader("Task Specification", divider="gray")
                     exam_focus = st.text_area(label="Exam Focus", placeholder="Exam Focus", height=100)
                     irr_topics = st.text_area(label="Irrelevant Topics", placeholder="Irrelevant Topics", height=100)
-                    num_tasks = st.number_input(label="Number of Tasks", min_value=1, max_value=40, placeholder="Number of Tasks")
-                    max_points = st.number_input(label="Max Points per Tasks", min_value=1, max_value=100, placeholder="Max Points per Task")
-                    multi_select = st.toggle("Multi Select")
+                    c1, c2, c3 = st.columns(3)
+                    with c1:
+                        num_tasks = st.number_input(label="Number of Tasks", min_value=1, max_value=40, placeholder="Number of Tasks")
+                    with c2:
+                        num_points = st.number_input(label="Points per Tasks", min_value=1, max_value=100, placeholder="Points per Task")
+                    with c3:
+                        st.markdown("")
+                        st.markdown("")
+                        multi_select = st.toggle("Multi Select")
                     
 
-                    submit_form = st.form_submit_button("Submit", use_container_width=True, disabled=not uploaded_files)
+                    submit_form = st.form_submit_button("Generate", use_container_width=True, disabled=not uploaded_files)
 
                     if submit_form:
-
                         st.session_state[f'form_data_{page_name}'].update({
                             'exam_topic': exam_topic,
                             'university': university,
                             'date': date,
                             'module': module,
                             'semester': semester,
+                            'prof_title': prof_title,
                             'professor': professor,
                             'exam_focus': exam_focus,
                             'irr_topics': irr_topics,
                             'num_tasks': num_tasks,
-                            'max_points': max_points,
+                            'num_points': num_points,
                             'multi_select': multi_select,
                             'uploaded_files': uploaded_files
                         })
@@ -89,14 +104,7 @@ class PageRenderer:
                         mime="docx"
                     )
 
-                    # Nach dem Erstellen den temp_files-Ordner leeren
-                    clear_temp_files()
-
                 # Back to Form-Button logik
                 if st.button("Back to Form"):
-                    # Vor dem Zurückkehren den Vectorstore und die temp_files löschen
-                    clear_temp_files()
-                    clear_vector_store(page_name)
-
                     st.session_state[f'form_submitted_{page_name}'] = False
                     st.rerun()
