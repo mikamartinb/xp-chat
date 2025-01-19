@@ -176,7 +176,7 @@ def newClassForm():
 
 # Sidebar
 with st.sidebar:
-    if st.button("Home"):
+    if st.button("Home", icon="🏠"):
         st.session_state.current_page = "Home"
     st.title("📚 Class Manager")
     st.write("Manage your classes.")
