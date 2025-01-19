@@ -23,7 +23,7 @@ def create_exam_document(form, vectorstore, page_name):
     try:
         run.add_picture(logo_path, width=Inches(2))  # Logo (Breite: 2 Zoll)
     except Exception as e:
-        print(f"Fehler beim Hinzufügen des Logos in den Header: {e}")
+        print(f"Error when adding the logo to the header: {e}")
 
     # Erste Seite: Nur Titel in der Mitte der Seite
     # Leere Absätze hinzufügen, um Platz zu schaffen
@@ -98,7 +98,8 @@ def create_exam_document(form, vectorstore, page_name):
 
             # Neue Überschrift (Fragenbezeichner) hinzufügen
             paragraph = doc.add_paragraph()
-            run = paragraph.add_run(line.strip("**"))
+            question_text = line.strip("**")
+            run = paragraph.add_run(f"{question_text} ({form['num_points']} Pt.)")
             run.bold = True  # Fragenbezeichner fett
             paragraph.paragraph_format.keep_with_next = True
 
