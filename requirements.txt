@@ -17,5 +17,4 @@ torchaudio
 transformers
 sentence-transformers
 pypdf
-python-dotenv
-docx2pdf
+pypandoc

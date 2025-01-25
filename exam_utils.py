@@ -4,7 +4,8 @@ from docx.shared import Pt
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.shared import Inches
 from model_utils import rag_generate_exam
-from docx2pdf import convert
+#from docx2pdf import convert
+#import pypandoc
 import os 
 import json
 
@@ -45,7 +46,7 @@ def create_exam_document(JSON_DIR, vectorstore, page_name, output_DIR):
         print(f"{key}: {value}")
     
     # Pfad zum Logo direkt in der Methode definieren
-    logo_path = "leuphana_logo.png"  # Ersetze dies durch den tatsächlichen Pfad
+    logo_path = "public/leuphana_logo.png"  # Ersetze dies durch den tatsächlichen Pfad
 
     exam_string = rag_generate_exam(form, vectorstore)
 
@@ -205,19 +206,21 @@ def create_exam_document(JSON_DIR, vectorstore, page_name, output_DIR):
         print(f"Failed to save document without answers: {e}")
         return False
 
-    # PDF-Konvertierung
-    try:
-        convert(exam_with_DIR_docx, exam_with_DIR_pdf)
-        print(f"PDF conversion for document with answers successful at {exam_with_DIR_pdf}")
-    except Exception as e:
-        print(f"Failed to convert document with answers to PDF: {e}")
-        return False
+    # PDF-Konvertierung wurde vor erst einmal auskommentiert
+    #try:
+    #    #convert(exam_with_DIR_docx, exam_with_DIR_pdf)
+    #    pypandoc.convert_file(exam_with_DIR_docx, 'pdf', outputfile=exam_without_DIR_pdf, extra_args=['--pdf-engine=xelatex'])
+    #    print(f"PDF conversion for document with answers successful at {exam_with_DIR_pdf}")
+    #except Exception as e:
+    #    print(f"Failed to convert document with answers to PDF: {e}")
+    #    return False
 
-    try:
-        convert(exam_without_DIR_docx, exam_without_DIR_pdf)
-        print(f"PDF conversion for document without answers successful at {exam_without_DIR_pdf}")
-    except Exception as e:
-        print(f"Failed to convert document without answers to PDF: {e}")
-        return False
+    #try:
+    #    #convert(exam_without_DIR_docx, exam_without_DIR_pdf)
+    #    pypandoc.convert_file(exam_without_DIR_docx, 'pdf', outputfile=exam_without_DIR_pdf, extra_args=['--pdf-engine=xelatex'])
+    #    print(f"PDF conversion for document without answers successful at {exam_without_DIR_pdf}")
+    #except Exception as e:
+    #    print(f"Failed to convert document without answers to PDF: {e}")
+    #    return False
 
     return True

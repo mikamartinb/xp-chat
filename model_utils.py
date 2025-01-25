@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 # Funktion zur Initialisierung des Modells
-def initialize_model(selected_model="meta-llama-3.3-70b-instruct"):
+def initialize_model(selected_model="meta-llama-3.1-70b-instruct"):
     # API Schlüssel laden
     config = configparser.ConfigParser()
     config_file_path = 'key.secret'
@@ -202,6 +202,8 @@ def rag_generate_exam(form, vectorstore):
     If two Answers are correct, use this format: Correct Answers: A) and B) \n
     
     If more than two Answers are correct, separate them by commas and use this format: Correct Answers: A), B) and C). IM
+    
+    Do not add ** before or after Correct Answers. 
     """
 
 
