@@ -4,6 +4,11 @@ This is a project for the AI-Project seminar
 
 ---
 
+für server mus das hinzugefügt werden:
+
+[browser]
+serverAddress = "aixaiprojekt.leuphana.de"
+
 ## Anleitung für die Arbeit mit dem Repository
 
 ### 1. Bestehende Conda-Umgebung deaktivieren
@@ -133,3 +138,7 @@ Um die Streamlit App zu starten, gehe wie folgt vor:
    **Hinweis**: Ersetze `Home.py` durch den entsprechenden Dateinamen, falls deine Startdatei einen anderen Namen hat.
 
 ---
+
+Für deploment in .Config File:
+[browser]
+serverAddress = "aixaiprojekt.leuphana.de"

@@ -191,7 +191,7 @@ def rag_generate_exam(form, vectorstore):
     **Question {form["num_tasks"]}**
     Is this a sample question? \n\n
     
-    **Answers** \n
+    ++Answers++ \n
     A) \n
     B) \n   
     C) \n
@@ -202,6 +202,8 @@ def rag_generate_exam(form, vectorstore):
     If two Answers are correct, use this format: Correct Answers: A) and B) \n
     
     If more than two Answers are correct, separate them by commas and use this format: Correct Answers: A), B) and C). IM
+    
+    Do not add ** before or after Correct Answers. 
     """
 
 
