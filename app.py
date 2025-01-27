@@ -23,6 +23,9 @@ if "all_pages" not in st.session_state:
 if "current_page" not in st.session_state:
     st.session_state.current_page = "Home"
 
+if "privacy_accepted" not in st.session_state:
+    st.session_state.privacy_accepted = False
+
 def reload_pages():
     st.session_state.all_pages = os.listdir(CLASSES_DIR)
 
@@ -30,6 +33,31 @@ def reload_exams(class_name):
     CurrentClassDIR = os.path.join(CLASSES_DIR, class_name)
     st.session_state.all_exams_in_class = os.listdir(CurrentClassDIR)
 
+# Privacy Dialog
+if not st.session_state.privacy_accepted:
+    @st.dialog("Datenschutzhinweise", width="medium")
+    def privacy_dialog():
+        st.write("Bitte lese die Datenschutzhinweise und bestätige diese um diese App zu nutzen :)")
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if st.button("Ablehnen", key="privacy_decline"):
+                st.error("Sie müssen den Datenschutzhinweisen zustimmen, um die App nutzen zu können.")
+        with col3:
+            if st.button("Annehmen", key="privacy_accept"):
+                st.session_state.privacy_accepted = True
+                st.toast("Danke, dass Sie den Datenschutzhinweisen zugestimmt haben.")
+                st.rerun()
+        with col2:
+            if st.download_button(
+                "Download Datenschutzhinweise",
+                data=open("public/Datenschutz/Datenschutz_Hinweise_oeffentliche_Aufgabe_7.03.docx", "rb").read(),
+                file_name="Datenschutz_Hinweise_oeffentliche_Aufgabe_7.03.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ):
+                st.toast("Datenschutzhinweise heruntergeladen.")
+
+    privacy_dialog()
+    
 @st.dialog("Delete Class", width="small")
 def delete_page(page_name):
     """Deletes a class and removes it from the list."""
@@ -49,7 +77,9 @@ def delete_page(page_name):
 
 # Home page
 def home_page():
-    st.image("public/XP-CHAT.png", use_container_width=True)
+    c1, c2, c3  = st.columns(3)
+    with c2:
+        st.image("public/XP-CHAT.png", use_column_width=True)
     st.title("Welcome to the Class Manager!")
     if st.button("Create new Class", icon="➕", key="new_class_button", use_container_width=True, type="primary"):
         newClassForm()
@@ -422,6 +452,7 @@ def newClassForm():
 
 # Sidebar
 with st.sidebar:
+    logo = st.image("public/xpchat_logo.png", width=200)
     if st.button("Home", icon="🏠", type="primary", use_container_width=True):
         st.session_state.current_page = "Home"
     st.title("📚 Class Manager")
