@@ -77,9 +77,7 @@ def delete_page(page_name):
 
 # Home page
 def home_page():
-    c1, c2, c3  = st.columns(3)
-    with c2:
-        st.image("public/XP-CHAT.png", use_column_width=True)
+    st.image("public/XP-Chat+Logo.svg", use_container_width=True)
     st.title("Welcome to the Class Manager!")
     if st.button("Create new Class", icon="➕", key="new_class_button", use_container_width=True, type="primary"):
         newClassForm()
@@ -452,7 +450,7 @@ def newClassForm():
 
 # Sidebar
 with st.sidebar:
-    logo = st.image("public/xpchat_logo.png", width=200)
+    logo = st.image("public/xpchat_logo.svg", width=100)
     if st.button("Home", icon="🏠", type="primary", use_container_width=True):
         st.session_state.current_page = "Home"
     st.title("📚 Class Manager")
