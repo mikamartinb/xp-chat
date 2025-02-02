@@ -24,10 +24,16 @@ Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, di
 ```bash
   python -m venv venv
 ```
+*ODER* 
+```bash
+  python3 -m venv venv
+```
+
 - Aktivieren (Windows)
 ```bash
   venv\Scripts\activate
 ```
+
 -  Aktivieren (Mac/Linux)
 ```bash
   source venv/bin/activate
@@ -75,6 +81,10 @@ In the winter semester 2024/2025, we developed a Python / Streamlit app that mak
 #### 2. Create and activate a virtual environment
 ```bash
   python -m venv venv
+```
+*OR* 
+```bash
+  python3 -m venv venv
 ```
 - Activate (Windows)
 ```bash
