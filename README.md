@@ -14,6 +14,7 @@ Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, di
 
 ### II.  Architektur
 
+<img src="public/architecture" alt="architecture">
 
 ### III. Benutzeranleitung
 #### 1. Repository klonen
@@ -63,8 +64,11 @@ Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, di
 ### I.  Project Discription
 In the winter semester 2024/2025, we developed a Python / Streamlit app that makes it easier for teachers and students to generate AI-supported exams. Users can create *Classes* and associated *Lectures*, whereby our system uses RAG (Retrieval-Augmented Generation) to analyze the content from lecture slides (PDFs) and generate suitable exam questions. This solution optimizes exam creation, saves valuable time and ensures targeted, content-based exam preparation.
 
-Translated with DeepL.com (free version)
-### II. User Guide
+### II.  Architecture
+
+<img src="public/architecture" alt="architecture">
+
+### III. User Guide
 #### 1. Clone repository
 ```bash
   git clone https://github.com/mikamartinb/xp-chat.git
