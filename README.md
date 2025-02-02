@@ -1,144 +1,107 @@
-# xp-chat
+<img src="public/XP-CHAT.png" alt="logo" width="300">
 
-This is a project for the AI-Project seminar
-
----
-
-für server mus das hinzugefügt werden:
-
-[browser]
-serverAddress = "aixaiprojekt.leuphana.de"
-
-## Anleitung für die Arbeit mit dem Repository
-
-### 1. Bestehende Conda-Umgebung deaktivieren
-
-Bevor du eine neue virtuelle Umgebung mit `venv` erstellst, deaktiviere zuerst deine bestehende `conda`-Umgebung:
-
-```bash
-conda deactivate
-```
-
-### 2. Repository klonen
-
-Um das Repository zu klonen, führe folgenden Befehl in deinem Terminal aus:
-
-```bash
-git clone https://github.com/mikamartinb/xp-chat.git
-cd xp-chat
-```
-
-### 3. Erstellen einer virtuellen Umgebung (venv)
-
-Um eine saubere und isolierte Python-Umgebung zu haben, verwende eine virtuelle Umgebung. Hier ist, wie du sie einrichtest:
-
-1. Erstelle eine virtuelle Umgebung im Repository-Ordner:
-
-   ```bash
-   python3.10 -m venv venv
-   ```
-
-2. Aktiviere die virtuelle Umgebung:
-
-   - **Linux/macOS**:
-
-     ```bash
-     source venv/bin/activate
-     ```
-
-   - **Windows**:
-     ```bash
-     venv\Scripts\activate
-     ```
-
-3. Installiere die benötigten Abhängigkeiten (falls vorhanden):
-   ```bash
-   pip install --upgrade pip
-   pip install -r requirements.txt
-   ```
-
-### 4. `.gitignore` anpassen
-
-Es ist wichtig, die virtuelle Umgebung nicht in das Git-Repository hochzuladen. Füge deshalb die folgenden Zeilen zu deiner `.gitignore`-Datei hinzu:
-
-```
-# Ignore virtual environment
-venv/
-```
-
-### 5. Arbeiten mit Branches
-
-Für jede Aufgabe oder jedes Feature, an dem du arbeitest, solltest du einen neuen Branch erstellen. Der Branch-Name sollte das Format `feature<ISSUE-NUMMER>` haben.
-
-#### Beispiel:
-
-Wenn du an Issue #0001 arbeitest, erstelle einen Branch mit folgendem Befehl:
-
-```bash
-git checkout -b feature0001
-```
-
-#### Schritte zum Arbeiten mit Git:
-
-1. **Neuen Branch erstellen**:  
-   Stelle sicher, dass du dich auf dem `main`-Branch befindest, und erstelle dann den neuen Branch:
-
-   ```bash
-   git checkout main
-   git pull origin main
-   git checkout -b feature<ISSUE-NUMMER>
-   ```
-
-2. **Änderungen verfolgen und committen**:  
-   Nachdem du Änderungen vorgenommen hast, füge sie zur Staging-Area hinzu:
-
-   ```bash
-   git add .
-   ```
-
-   Erstelle dann einen Commit mit einer aussagekräftigen Nachricht:
-
-   ```bash
-   git commit -m "Beschreibung der Änderungen"
-   ```
-
-3. **Änderungen pushen**:  
-   Um deinen Branch in das Remote-Repository zu pushen, führe folgenden Befehl aus:
-
-   ```bash
-   git push origin feature<ISSUE-NUMMER>
-   ```
-
-4. **Pull Request stellen**:  
-   Erstelle auf GitHub einen Pull Request, sobald du fertig bist. Stelle sicher, dass du den richtigen Branch und die passende Beschreibung angibst.
-
-### 6. Streamlit App starten
-
-Um die Streamlit App zu starten, gehe wie folgt vor:
-
-1. Stelle sicher, dass deine virtuelle Umgebung aktiv ist.
-
-   - **Linux/macOS**:
-
-     ```bash
-     source venv/bin/activate
-     ```
-
-   - **Windows**:
-     ```bash
-     venv\Scripts\activate
-     ```
-
-2. Starte die Streamlit App im Terminal:
-
-   ```bash
-   streamlit run Home.py
-   ```
-
-   **Hinweis**: Ersetze `Home.py` durch den entsprechenden Dateinamen, falls deine Startdatei einen anderen Namen hat.
+🌍 **Sprache / Language**:  
+🇩🇪 [Deutsch](#deutsche-version) | 🇬🇧 [English](#english-version)
 
 ---
 
-Für deploment in .Config File:
-[browser]
-serverAddress = "aixaiprojekt.leuphana.de"
+## 📖 Deutsche Version <a id="deutsche-version"></a>
+
+### I.  Projektbeschreibung
+Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, die Lehrenden und Studierenden das KI-gestützte Generieren von Klausuren erleichtert. Nutzer:innen können *Classes* und zugehörige *Lectures* anlegen, wobei unser System mithilfe von RAG (Retrieval-Augmented Generation) die Inhalte aus Vorlesungsfolien (PDFs) analysiert und passende Prüfungsfragen generiert. Diese Lösung optimiert die Klausurerstellung, spart wertvolle Zeit und sorgt für eine zielgerichtete, inhaltsbasierte Prüfungsvorbereitung.
+
+### II.  Architektur
+
+<img src="public/architecture" alt="architecture">
+
+### III. Benutzeranleitung
+#### 1. Repository klonen
+```bash
+  git clone https://github.com/mikamartinb/xp-chat.git
+  cd xp-chat
+```
+#### 2. Virtuelle Umgebung erstellen und aktivieren
+```bash
+  python -m venv venv
+```
+- Aktivieren (Windows)
+```bash
+  venv\Scripts\activate
+```
+-  Aktivieren (Mac/Linux)
+```bash
+  source venv/bin/activate
+```
+
+#### 3. Abhängigkeiten installieren
+```bash
+  pip install -r requirements.txt
+```
+
+#### 4. API-Schlüssel hinzufügen (LLM)
+- Erstelle ein Datei *`key.secret`* und füge folgenden Schlüssel ein
+```bash
+  [GDWG]
+  API_KEY = "DEIN_SCHLÜSSEL"
+```
+
+#### 5. App starten
+```bash
+  streamlit run app.py
+```
+##
+*Wir wünschen euch viel Spaß mit dem Exam-Generator!*
+
+*~Fergan, Jonne & Mika*
+
+---
+
+
+## 📖 English Version <a id="english-version"></a>
+
+### I.  Project Discription
+In the winter semester 2024/2025, we developed a Python / Streamlit app that makes it easier for teachers and students to generate AI-supported exams. Users can create *Classes* and associated *Lectures*, whereby our system uses RAG (Retrieval-Augmented Generation) to analyze the content from lecture slides (PDFs) and generate suitable exam questions. This solution optimizes exam creation, saves valuable time and ensures targeted, content-based exam preparation.
+
+### II.  Architecture
+
+<img src="public/architecture" alt="architecture">
+
+### III. User Guide
+#### 1. Clone repository
+```bash
+  git clone https://github.com/mikamartinb/xp-chat.git
+  cd xp-chat
+```
+#### 2. Create and activate a virtual environment
+```bash
+  python -m venv venv
+```
+- Activate (Windows)
+```bash
+  venv\Scripts\activate
+```
+-  Activate (Mac/Linux)
+```bash
+  source venv/bin/activate
+```
+
+#### 3. Install dependencies
+```bash
+  pip install -r requirements.txt
+```
+
+#### 4. Add API-key (LLM)
+- Create a file *`key.secret`* and add a LLM API-key
+```bash
+  [GDWG]
+  API_KEY = "YOUR_KEY"
+```
+
+#### 5. Start app
+```bash
+  streamlit run app.py
+```
+##
+*We hope you enjoy using the Exam Generator!*
+
+*~Fergan, Jonne & Mika*

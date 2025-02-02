@@ -564,6 +564,7 @@ def newClassForm():
 # Sidebar content for navigation and class creation
 with st.sidebar:
     st.image("public/xpchat_logo.png", width=200)
+
     if st.button("Home", icon="🏠", type="primary", use_container_width=True):
         st.session_state.current_page = "Home"
     st.title("📚 Class Manager")
