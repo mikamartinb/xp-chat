@@ -1,3 +1,5 @@
+<img src="public/xpchat_logo.png" alt="logo" width="150">
+
 # XP-Chat
 
 🌍 **Sprache / Language**:  
@@ -10,8 +12,10 @@
 ### I.  Projektbeschreibung
 Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, die Lehrenden und Studierenden das KI-gestützte Generieren von Klausuren erleichtert. Nutzer:innen können *Classes* und zugehörige *Lectures* anlegen, wobei unser System mithilfe von RAG (Retrieval-Augmented Generation) die Inhalte aus Vorlesungsfolien (PDFs) analysiert und passende Prüfungsfragen generiert. Diese Lösung optimiert die Klausurerstellung, spart wertvolle Zeit und sorgt für eine zielgerichtete, inhaltsbasierte Prüfungsvorbereitung.
 
+### II.  Architektur
 
-### II. Benutzeranleitung
+
+### III. Benutzeranleitung
 #### 1. Repository klonen
 ```bash
   git clone https://github.com/mikamartinb/xp-chat.git
@@ -46,7 +50,7 @@ Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, di
 ```bash
   streamlit run app.py
 ```
-
+##
 *Wir wünschen euch viel Spaß mit dem Exam-Generator!*
 
 *~Fergan, Jonne & Mika*
@@ -95,7 +99,7 @@ Translated with DeepL.com (free version)
 ```bash
   streamlit run app.py
 ```
-
+##
 *We hope you enjoy using the Exam Generator!*
 
 *~Fergan, Jonne & Mika*
