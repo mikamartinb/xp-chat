@@ -13,7 +13,7 @@ Im Wintersemester 2024/2025 haben wir eine Python / Streamlit-App entwickelt, di
 
 ### II. Architektur
 
-<img src="public/architecture" alt="architecture">
+<img src="public/architecture.png" alt="architecture">
 
 ### III. Benutzeranleitung
 
@@ -79,7 +79,7 @@ In the winter semester 2024/2025, we developed a Python / Streamlit app that mak
 
 ### II. Architecture
 
-<img src="public/architecture" alt="architecture">
+<img src="public/architecture.png" alt="architecture">
 
 ### III. User Guide
 
