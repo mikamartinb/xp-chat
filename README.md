@@ -1,4 +1,4 @@
-<img src="public/XP-CHAT.png" alt="logo" width="300">
+<img src="public/XP-Chat+Logo.svg" alt="logo" width="300">
 
 🌍 **Sprache / Language**:  
 🇩🇪 [Deutsch](#deutsche-version) | 🇬🇧 [English](#english-version)
