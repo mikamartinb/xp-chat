@@ -140,5 +140,7 @@ Um die Streamlit App zu starten, gehe wie folgt vor:
 ---
 
 Für deploment in .Config File:
+```bash
 [browser]
 serverAddress = "aixaiprojekt.leuphana.de"
+```
